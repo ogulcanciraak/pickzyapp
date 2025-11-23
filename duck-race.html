@@ -1,501 +1,738 @@
 <!DOCTYPE html>
 <html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ördek Yarışı - Karar Ver!</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ördek Yarışı - Karar Verici</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&family=VT323&display=swap" rel="stylesheet">
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .back-btn {
-            background: rgba(255,255,255,0.9);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-
-        .back-btn:hover {
-            background: white;
-            transform: translateX(-5px);
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
-
-        .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header p {
-            font-size: 1.2em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-        }
-
-        .setup-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #4facfe;
-        }
-
-        .add-btn, .start-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .add-btn {
-            background: #4facfe;
-            color: white;
-        }
-
-        .add-btn:hover {
-            background: #3a8fd4;
-            transform: scale(1.05);
-        }
-
-        .options-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .option-tag {
-            background: #f0f9ff;
-            padding: 10px 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 2px solid #4facfe;
-        }
-
-        .remove-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .start-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-            font-size: 20px;
-            padding: 16px;
-            margin-top: 20px;
-        }
-
-        .start-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
-        }
-
-        .start-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Race Track */
-        .race-container {
-            display: none;
-            background: rgba(255,255,255,0.95);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .race-title {
-            text-align: center;
-            color: #2d3436;
-            font-size: 2em;
-            margin-bottom: 30px;
-        }
-
-        .track {
-            background: linear-gradient(to bottom, 
-                #87CEEB 0%, 
-                #87CEEB 50%, 
-                #90EE90 50%, 
-                #90EE90 100%
-            );
-            border-radius: 15px;
-            padding: 20px;
-            position: relative;
-            min-height: 400px;
-        }
-
-        .lane {
-            position: relative;
-            height: 80px;
-            margin-bottom: 10px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        .lane:nth-child(odd) {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .lane-number {
-            position: absolute;
-            left: 10px;
-            background: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #4facfe;
-            z-index: 10;
-        }
-
-        .duck {
-            position: absolute;
-            left: 60px;
-            font-size: 50px;
-            transition: left 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-            transform: rotate(-10deg);
-        }
-
-        .duck.racing {
-            left: calc(100% - 80px) !important;
-        }
-
-        .finish-line {
-            position: absolute;
-            right: 20px;
-            top: 0;
-            bottom: 0;
-            width: 20px;
-            background: repeating-linear-gradient(
-                45deg,
-                #000,
-                #000 10px,
-                #fff 10px,
-                #fff 20px
-            );
-        }
-
-        .result-panel {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .result-content {
-            background: white;
-            padding: 50px;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-            animation: popIn 0.5s;
-        }
-
-        @keyframes popIn {
-            0% {
-                transform: scale(0.5);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .winner-emoji {
-            font-size: 100px;
-            margin-bottom: 20px;
-            animation: bounce 0.5s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-
-        .winner-text {
-            font-size: 2.5em;
-            color: #4facfe;
-            font-weight: bold;
-            margin-bottom: 30px;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 15px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 15px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .retry-btn {
-            background: #4facfe;
-            color: white;
-        }
-
-        .retry-btn:hover {
-            background: #3a8fd4;
-            transform: translateY(-2px);
-        }
-
-        .home-btn {
-            background: #636e72;
-            color: white;
-        }
-
-        .home-btn:hover {
-            background: #535c60;
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-
-            .duck {
-                font-size: 35px;
-            }
-
-            .lane {
-                height: 60px;
-            }
-
-            .result-content {
-                padding: 30px;
-                margin: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-    <button class="back-btn" onclick="location.href='index.html'">← Ana Sayfa</button>
-
-    <div class="container">
-        <div class="header">
-            <h1>🦆 Ördek Yarışı</h1>
-            <p>Seçeneklerini gir ve ördekleri yarıştır!</p>
-        </div>
-
-        <div class="setup-panel" id="setupPanel">
-            <div class="input-group">
-                <div class="input-row">
-                    <input type="text" id="optionInput" placeholder="Seçenek ekle (örn: Pizza, Burger...)">
-                    <button class="add-btn" onclick="addOption()">+ Ekle</button>
-                </div>
-            </div>
-
-            <div class="options-list" id="optionsList"></div>
-
-            <button class="start-btn" id="startBtn" onclick="startRace()" disabled>
-                🏁 Yarışı Başlat!
-            </button>
-        </div>
-
-        <div class="race-container" id="raceContainer">
-            <h2 class="race-title">🏁 Yarış Başladı!</h2>
-            <div class="track" id="track">
-                <div class="finish-line"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="result-panel" id="resultPanel">
-        <div class="result-content">
-            <div class="winner-emoji">🏆</div>
-            <h2 style="color: #4facfe; margin-bottom: 20px;">Kazanan!</h2>
-            <div class="winner-text" id="winnerText"></div>
-            <div class="action-btns">
-                <button class="action-btn retry-btn" onclick="resetRace()">🔄 Tekrar Yarış</button>
-                <button class="action-btn home-btn" onclick="location.href='index.html'">🏠 Ana Sayfa</button>
-            </div>
-        </div>
-    </div>
-
+    <!-- Tailwind Config -->
     <script>
-        let options = [];
-        const duckColors = ['🦆', '🦆', '🦆', '🦆', '🦆', '🦆'];
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Fredoka', 'sans-serif'],
+              digital: ['VT323', 'monospace'],
+            },
+            animation: {
+              'wobble': 'wobble 1s ease-in-out infinite',
+              'bounce-slow': 'bounce 3s infinite',
+              'wave': 'wave 3s cubic-bezier( 0.36, 0.45, 0.63, 0.53) infinite',
+              'fadeIn': 'fadeIn 0.2s ease-out',
+              'swim': 'swim 1.5s ease-in-out infinite',
+              'boost': 'boost 0.4s ease-in-out infinite',
+            },
+            keyframes: {
+              wobble: {
+                '0%, 100%': { transform: 'rotate(-3deg)' },
+                '50%': { transform: 'rotate(3deg)' },
+              },
+              wave: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-5px)' },
+              },
+              swim: {
+                 '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
+                 '50%': { transform: 'translateY(-6px) rotate(3deg)' },
+              },
+              boost: {
+                 '0%, 100%': { transform: 'scale(1) skew(0deg)' },
+                 '50%': { transform: 'scale(1.1) skew(-5deg)' },
+              },
+              fadeIn: {
+                '0%': { opacity: '0', transform: 'scale(0.95)' },
+                '100%': { opacity: '1', transform: 'scale(1)' },
+              }
+            },
+          },
+        },
+      }
+    </script>
+    
+    <!-- Import Map for React and Lucide -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.0/client",
+        "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
+      }
+    }
+    </script>
+  <link rel="stylesheet" href="/index.css">
+</head>
+  <body>
+    <div id="root"></div>
 
-        document.getElementById('optionInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') addOption();
-        });
+    <script type="module">
+      import React, { useState, useEffect, useRef } from 'react';
+      import ReactDOM from 'react-dom/client';
+      import { Plus, X, Play, Trash2, Clock, Zap, AlertCircle, RotateCcw, Home, Trophy, Volume2, VolumeX, Shuffle } from 'lucide-react';
 
-        function addOption() {
-            const input = document.getElementById('optionInput');
-            const value = input.value.trim();
+      const e = React.createElement;
 
-            if (!value) return;
+      // --- CONSTANTS & UTILS ---
 
-            if (options.length >= 6) {
-                alert('Maksimum 6 seçenek ekleyebilirsin!');
-                return;
+      const DUCK_COLORS = [
+        { bg: 'bg-red-500', border: 'border-red-700', text: 'text-white' },
+        { bg: 'bg-orange-500', border: 'border-orange-700', text: 'text-white' },
+        { bg: 'bg-yellow-400', border: 'border-yellow-600', text: 'text-black' },
+        { bg: 'bg-green-500', border: 'border-green-700', text: 'text-white' },
+        { bg: 'bg-teal-500', border: 'border-teal-700', text: 'text-white' },
+        { bg: 'bg-cyan-500', border: 'border-cyan-700', text: 'text-white' },
+        { bg: 'bg-blue-500', border: 'border-blue-700', text: 'text-white' },
+        { bg: 'bg-indigo-500', border: 'border-indigo-700', text: 'text-white' },
+        { bg: 'bg-purple-500', border: 'border-purple-700', text: 'text-white' },
+        { bg: 'bg-pink-500', border: 'border-pink-700', text: 'text-white' },
+      ];
+
+      const generateUniqueDuckSvg = () => {
+        const colors = ['#facc15', '#fbbf24', '#fde047', '#ffffff', '#a8a29e', '#57534e']; 
+        const beakColors = ['#f97316', '#ea580c', '#fb923c'];
+        const bodyColor = colors[Math.floor(Math.random() * colors.length)];
+        const beakColor = beakColors[Math.floor(Math.random() * beakColors.length)];
+        
+        const hatType = Math.random() > 0.3 ? Math.floor(Math.random() * 5) : 0;
+        const hasGlasses = Math.random() > 0.8;
+
+        let accessorySvg = '';
+
+        if (hatType === 1) { 
+          accessorySvg += `<rect x="35" y="5" width="30" height="25" fill="#1e293b" /><rect x="25" y="30" width="50" height="5" fill="#1e293b" /><rect x="35" y="25" width="30" height="5" fill="#ef4444" />`;
+        } else if (hatType === 2) { 
+          accessorySvg += `<path d="M30 30 Q30 10 70 30 L70 35 L30 35 Z" fill="#2563eb" /><rect x="65" y="30" width="20" height="5" fill="#2563eb" />`;
+        } else if (hatType === 3) { 
+          accessorySvg += `<ellipse cx="50" cy="25" rx="35" ry="10" fill="#78350f" /><path d="M35 25 Q50 5 65 25" fill="#92400e" stroke="#78350f" stroke-width="2"/>`;
+        } else if (hatType === 4) { 
+          accessorySvg += `<path d="M30 30 L30 15 L40 25 L50 10 L60 25 L70 15 L70 30 Z" fill="#fbbf24" stroke="#b45309" stroke-width="2" />`;
+        }
+
+        if (hasGlasses) {
+          accessorySvg += `<circle cx="65" cy="45" r="6" fill="black" /><circle cx="80" cy="45" r="6" fill="black" /><line x1="71" y1="45" x2="74" y2="45" stroke="black" stroke-width="2" />`;
+        } else {
+          accessorySvg += `<circle cx="70" cy="45" r="5" fill="white" /><circle cx="72" cy="45" r="2" fill="black" />`;
+        }
+
+        const svgString = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+            <path d="M20 60 Q10 80 40 90 L80 90 Q95 80 90 60 Q85 40 60 40 L60 60 Z" fill="${bodyColor}" />
+            <circle cx="60" cy="40" r="25" fill="${bodyColor}" />
+            <path d="M35 65 Q45 85 65 65" fill="none" stroke="${bodyColor === '#ffffff' ? '#e5e5e5' : '#ca8a04'}" stroke-width="3" />
+            <path d="M80 45 Q95 40 95 50 Q90 60 80 55 Z" fill="${beakColor}" />
+            ${accessorySvg}
+          </svg>
+        `;
+
+        return `data:image/svg+xml;base64,${btoa(svgString)}`;
+      };
+
+      // --- COMPONENT: SETUP SCREEN ---
+
+      const SetupScreen = ({ 
+        ducks, 
+        onAdd, 
+        onRemove, 
+        onClear,
+        onStart, 
+        raceDuration, 
+        setRaceDuration 
+      }) => {
+        const [inputValue, setInputValue] = useState('');
+
+        const handleSubmit = (event) => {
+          event.preventDefault();
+          if (inputValue.trim()) {
+              if(ducks.length >= 50) {
+                  alert("En fazla 50 ördek yarıştırabilirsiniz!");
+                  return;
+              }
+              onAdd(inputValue);
+              setInputValue('');
+          }
+        };
+
+        const getColor = (jsonStr) => {
+          try {
+            return JSON.parse(jsonStr);
+          } catch {
+            return { bg: 'bg-gray-500', text: 'text-white' };
+          }
+        };
+
+        return e('div', { className: "w-full max-w-lg mx-4 flex flex-col max-h-[90vh]" },
+            e('div', { className: "bg-white rounded-xl shadow-2xl overflow-hidden border-4 border-slate-800 flex flex-col h-full" },
+              
+              // Header
+              e('div', { className: "bg-slate-800 p-4 text-center flex justify-between items-center" },
+                  e('h2', { className: "text-2xl font-black text-white tracking-wide uppercase flex-1" }, 'Yarışçılar'),
+                  ducks.length > 0 && e('button', { 
+                          onClick: onClear,
+                          title: "Tümünü Temizle",
+                          className: "bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors"
+                      }, e(Trash2, { size: 20 }))
+              ),
+
+              e('div', { className: "p-6 bg-slate-100 flex-1 flex flex-col min-h-0" },
+                  // Settings
+                  e('div', { className: "mb-4 bg-white p-3 rounded-lg shadow-sm border border-slate-200" },
+                      e('div', { className: "flex items-center justify-between mb-2" },
+                          e('div', { className: "flex items-center gap-2 text-slate-700 font-bold" },
+                              e(Clock, { size: 18 }),
+                              e('span', null, `Süre: ${raceDuration} sn`)
+                          )
+                      ),
+                      e('input', { 
+                          type: "range", 
+                          min: "5", 
+                          max: "60", 
+                          step: "5",
+                          value: raceDuration, 
+                          onChange: (ev) => setRaceDuration(Number(ev.target.value)),
+                          className: "w-full accent-blue-500 cursor-pointer h-2 bg-slate-200 rounded-lg appearance-none"
+                      }),
+                      e('div', { className: "flex justify-between text-xs text-slate-400 mt-1 font-mono" },
+                          e('span', null, 'Hızlı (5s)'),
+                          e('span', null, 'Uzun (60s)')
+                      )
+                  ),
+
+                  // Input
+                  e('form', { onSubmit: handleSubmit, className: "flex gap-2 mb-4 shrink-0" },
+                      e('input', {
+                          type: "text",
+                          value: inputValue,
+                          onChange: (ev) => setInputValue(ev.target.value),
+                          placeholder: "İsim girin...",
+                          className: "flex-1 border-2 border-slate-300 rounded-lg px-4 py-3 text-lg focus:border-blue-500 focus:outline-none shadow-inner",
+                          autoFocus: true
+                      }),
+                      e('button', { 
+                          type: "submit",
+                          disabled: !inputValue.trim(),
+                          className: "bg-green-500 hover:bg-green-600 disabled:bg-slate-300 text-white rounded-lg px-4 border-b-4 border-green-700 active:border-b-0 active:translate-y-1 transition-all"
+                      }, e(Plus, { size: 28, strokeWidth: 3 }))
+                  ),
+
+                  // List
+                  e('div', { className: "space-y-2 overflow-y-auto custom-scrollbar pr-2 mb-4 flex-1" },
+                      ducks.length === 0 && e('div', { className: "text-center text-slate-400 italic py-8 flex flex-col items-center" },
+                              e('span', { className: "text-4xl mb-2" }, '🦆'),
+                              e('p', null, 'Henüz kimse eklenmedi.'),
+                              e('p', { className: "text-sm mt-2" }, 'Yukarıdan isim ekleyerek başlayın.')
+                      ),
+                      ducks.map((duck, index) => {
+                          const colors = getColor(duck.color);
+                          return e('div', { key: duck.id, className: "flex items-center bg-white p-2 rounded-lg border-2 border-slate-200 shadow-sm animate-[fadeIn_0.2s_ease-out]" },
+                                  e('div', { className: `w-8 h-8 rounded-full ${colors.bg} flex items-center justify-center text-white font-bold mr-3 border border-black/10 shrink-0` }, index + 1),
+                                  e('span', { className: "flex-1 font-bold text-slate-700 text-lg truncate" }, duck.name),
+                                  e('button', { 
+                                      onClick: () => onRemove(duck.id),
+                                      className: "text-slate-300 hover:text-red-500 transition-colors p-2 shrink-0"
+                                  }, e(X, { size: 20 }))
+                          );
+                      })
+                  ),
+
+                  // Action
+                  e('button', {
+                      onClick: onStart,
+                      disabled: ducks.length < 2,
+                      className: "w-full shrink-0 bg-blue-500 hover:bg-blue-600 disabled:bg-slate-400 disabled:cursor-not-allowed text-white text-2xl font-black py-4 rounded-xl border-b-8 border-blue-700 active:border-b-0 active:translate-y-2 transition-all flex items-center justify-center gap-3"
+                  }, e(Play, { fill: "currentColor", size: 28 }), 'BAŞLAT')
+              )
+            )
+        );
+      };
+
+      // --- COMPONENT: RACE TRACK ---
+
+      const Bush = ({ className }) => e('svg', { viewBox: "0 0 100 60", className, fill: "none", xmlns: "http://www.w3.org/2000/svg" },
+          e('path', { d: "M10 50C10 50 0 40 10 30C20 20 20 10 40 10C60 10 70 20 80 20C90 20 100 40 90 50", stroke: "#15803d", strokeWidth: "3", strokeLinecap: "round" }),
+          e('path', { d: "M20 50C20 50 15 35 30 30", stroke: "#15803d", strokeWidth: "2", strokeLinecap: "round" }),
+          e('path', { d: "M70 50C70 50 75 35 60 30", stroke: "#15803d", strokeWidth: "2", strokeLinecap: "round" })
+      );
+
+      const RaceTrack = ({ ducks }) => {
+        
+        const getColor = (jsonStr) => {
+          try {
+            return JSON.parse(jsonStr);
+          } catch {
+            return { bg: 'bg-gray-500', border: 'border-gray-600', text: 'text-white' };
+          }
+        };
+
+        const count = ducks.length;
+        
+        const calculateRowHeight = () => {
+          if (count <= 3) return 'h-40';
+          if (count <= 6) return 'h-32';
+          if (count <= 10) return 'h-24';
+          if (count <= 20) return 'h-16';
+          return 'h-full'; 
+        };
+
+        const rowHeightClass = calculateRowHeight();
+        const isCrowded = count > 10;
+        const isVeryCrowded = count > 25;
+
+        return e('div', { className: "absolute inset-0 flex flex-col bg-[#2d88a4]" },
+              
+              // BACKGROUND ART LAYER
+              e('div', { className: "absolute inset-0 pointer-events-none z-0 flex flex-col" },
+                  e('div', { className: "h-[20%] bg-[#22c55e] relative shadow-lg shrink-0" },
+                      e(Bush, { className: "absolute bottom-2 left-[5%] w-16 h-10 opacity-80" }),
+                      e(Bush, { className: "absolute bottom-6 left-[45%] w-12 h-8 opacity-60" }),
+                      e(Bush, { className: "absolute bottom-4 right-[10%] w-20 h-12 opacity-80" }),
+                      e('div', { className: "absolute bottom-8 left-[20%] text-green-700 font-bold opacity-40" }, 'w'),
+                      e('div', { className: "absolute bottom-4 right-[30%] text-green-700 font-bold opacity-40" }, 'w'),
+                      e('div', { className: "absolute bottom-0 w-full h-4 bg-[#784f32]" },
+                          e('div', { className: "absolute -top-1 left-0 w-full h-2 bg-[#784f32] [clip-path:polygon(0%_100%,_10%_0%,_20%_100%,_30%_10%,_40%_100%,_50%_0%,_60%_100%,_70%_0%,_80%_100%,_90%_0%,_100%_100%)] opacity-50" })
+                      )
+                  ),
+                  e('div', { className: "flex-1 bg-[#2686a0] relative overflow-hidden" },
+                      e('div', { className: "w-[120%] h-24 bg-[#1f728a] absolute top-[10%] -left-10 -rotate-1 opacity-80 rounded-[50%] blur-sm" }),
+                      e('div', { className: "w-[120%] h-24 bg-[#1b657d] absolute top-[30%] -left-10 rotate-1 opacity-80 rounded-[50%] blur-sm" }),
+                      e('div', { className: "w-[120%] h-24 bg-[#185a70] absolute top-[50%] -left-10 -rotate-1 opacity-80 rounded-[50%] blur-sm" }),
+                      e('div', { className: "w-[120%] h-24 bg-[#144f63] absolute top-[70%] -left-10 rotate-1 opacity-80 rounded-[50%] blur-sm" }),
+                      e('div', { className: "w-[120%] h-24 bg-[#104557] absolute top-[90%] -left-10 -rotate-1 opacity-80 rounded-[50%] blur-sm" })
+                  )
+              ),
+
+              // GAMEPLAY LAYER
+              e('div', { className: "absolute inset-0 z-20 flex flex-col h-full" },
+                  // Spacer
+                  e('div', { className: "h-[20%] w-full flex-shrink-0 pointer-events-none" }),
+
+                  // Water / Track
+                  e('div', { className: "flex-1 relative w-full h-full flex flex-col justify-center" },
+                      
+                      // Finish Line
+                      e('div', { className: "absolute top-0 bottom-0 right-[10%] w-[5vw] z-0 flex flex-col border-l-4 border-r-4 border-white/30 h-full" },
+                          e('div', { className: "w-full h-full opacity-90", style: {
+                              backgroundImage: `linear-gradient(45deg, #000 25%, transparent 25%), linear-gradient(-45deg, #000 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #000 75%), linear-gradient(-45deg, transparent 75%, #000 75%)`,
+                              backgroundColor: 'white',
+                              backgroundSize: '30px 30px',
+                              backgroundPosition: '0 0, 0 15px, 15px -15px, -15px 0px'
+                          }})
+                      ),
+
+                      // Ducks
+                      e('div', { className: `w-full relative flex flex-col ${count > 20 ? 'h-full' : ''}` },
+                          ducks.map((duck, index) => {
+                              const colors = getColor(duck.color);
+                              
+                              let animClass = 'animate-swim'; 
+                              
+                              return e('div', { 
+                                      key: duck.id, 
+                                      className: `relative w-full flex items-center shrink-0 border-b border-black/5 last:border-0 ${rowHeightClass}`,
+                                      style: isVeryCrowded ? { flex: 1, maxHeight: '60px' } : {}
+                                  },
+                                      // Duck Position
+                                      e('div', { 
+                                          className: "absolute top-1/2 -translate-y-1/2 z-20",
+                                          style: { 
+                                              left: `calc(${duck.progress * 0.8}% + 10px)`, 
+                                              zIndex: 100 + index, 
+                                              height: isCrowded ? '140%' : '85%', 
+                                              width: 'auto',
+                                              aspectRatio: '1/1',
+                                              transition: 'left 0.3s ease-out' 
+                                          }
+                                      },
+                                          e('div', { className: "relative group w-full h-full" },
+                                              
+                                              // Name Bubble
+                                              e('div', { className: `absolute left-1/2 -translate-x-1/2 bg-white border-2 border-black px-4 py-2 rounded-lg shadow-sm whitespace-nowrap z-50 transition-transform origin-bottom ${isCrowded ? '-top-[60%] scale-75' : '-top-16'}` },
+                                                  e('p', { className: `relative z-10 font-black text-black font-sans leading-none tracking-tight ${isCrowded ? 'text-xs' : 'text-sm md:text-base'}` }, duck.name),
+                                                  e('div', { className: "absolute left-1/2 -bottom-2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px] border-t-black" }),
+                                                  e('div', { className: "absolute left-1/2 -bottom-[5px] -translate-x-1/2 w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[6px] border-t-white" })
+                                              ),
+
+                                              // Image Container
+                                              e('div', { className: `relative w-full h-full ${animClass}` },
+                                                  e('img', { 
+                                                      src: duck.avatarUrl, 
+                                                      alt: "Duck", 
+                                                      className: "w-full h-full object-contain drop-shadow-md select-none",
+                                                      draggable: false
+                                                  }),
+                                                  
+                                                  // Number Badge
+                                                  !isCrowded && e('div', { className: `absolute top-[60%] left-[10%] w-[30%] h-[30%] rounded-full ${colors.bg} ${colors.border} border flex items-center justify-center shadow-sm transform -translate-y-1/2` },
+                                                      e('span', { className: "text-[60%] font-black text-white leading-none" }, index + 1)
+                                                  ),
+
+                                                  // Rank Badge
+                                                  duck.rank && e('div', { className: "absolute -right-[10%] -top-[10%] bg-yellow-400 text-yellow-900 border-2 border-white w-[40%] h-[40%] rounded-full flex items-center justify-center font-black text-[70%] shadow-lg animate-bounce z-40" },
+                                                      `#${duck.rank}`
+                                                  )
+                                              )
+
+                                          )
+                                      )
+                                  );
+                          })
+                      )
+                  )
+              )
+        );
+      };
+
+      // --- COMPONENT: WINNER MODAL ---
+
+      const WinnerModal = ({ winner, timer, onRestart, onReset }) => {
+        const [show, setShow] = useState(false);
+        const colors = JSON.parse(winner.color);
+
+        useEffect(() => {
+          setShow(true);
+        }, []);
+
+        return e('div', { className: `fixed inset-0 z-[100] flex items-center justify-center p-4 transition-all duration-500 ${show ? 'bg-black/70 backdrop-blur-sm' : 'bg-transparent pointer-events-none opacity-0'}` },
+            
+            e('div', { className: `bg-white rounded-3xl shadow-2xl max-w-sm w-full p-6 text-center transform transition-all duration-500 border-8 border-yellow-400 ${show ? 'scale-100 translate-y-0' : 'scale-50 translate-y-20'}` },
+              
+              // Header Icon
+              e('div', { className: "absolute -top-16 left-1/2 -translate-x-1/2" },
+                   e('div', { className: "bg-yellow-400 p-4 rounded-full shadow-lg border-4 border-white inline-block" },
+                      e(Trophy, { size: 48, className: "text-white drop-shadow-md", fill: "currentColor" })
+                   )
+              ),
+
+              e('div', { className: "mt-8" },
+                  e('h2', { className: "text-4xl font-black text-slate-800 mb-1 uppercase tracking-tight" }, 'Kazanan'),
+                  
+                  // Duck Visual
+                  e('div', { className: "my-6 relative inline-block" },
+                      e('img', { src: winner.avatarUrl, alt: "Winner", className: "w-32 h-32 object-contain animate-bounce-slow" }),
+                      e('div', { className: "absolute -bottom-2 right-0 bg-yellow-400 text-yellow-900 font-bold px-3 py-1 rounded-full border-2 border-white shadow-sm" }, '#1')
+                  ),
+
+                  e('div', { className: `text-3xl font-bold ${colors.text.replace('text-white', 'text-blue-600')} mb-4` }, winner.name),
+
+                  e('div', { className: "flex items-center justify-center gap-2 text-slate-500 font-mono text-xl bg-slate-100 py-2 rounded-lg mb-6 mx-4" },
+                      e(Clock, { size: 20 }),
+                      timer
+                  ),
+
+                  e('div', { className: "grid grid-cols-2 gap-3" },
+                      e('button', { 
+                          onClick: onRestart,
+                          className: "flex flex-col items-center justify-center py-3 rounded-xl bg-blue-100 text-blue-600 hover:bg-blue-200 hover:scale-105 transition-all font-bold border-b-4 border-blue-300 active:border-b-0 active:translate-y-1"
+                      }, 
+                          e(RotateCcw, { size: 20, className: "mb-1" }),
+                          'Tekrar'
+                      ),
+                      e('button', { 
+                          onClick: onReset,
+                          className: "flex flex-col items-center justify-center py-3 rounded-xl bg-slate-100 text-slate-600 hover:bg-slate-200 hover:scale-105 transition-all font-bold border-b-4 border-slate-300 active:border-b-0 active:translate-y-1"
+                      }, 
+                          e(Home, { size: 20, className: "mb-1" }),
+                          'Menü'
+                      )
+                  )
+              )
+
+            )
+        );
+      };
+
+      // --- MAIN APP ---
+
+      const App = () => {
+        const [gameState, setGameState] = useState('setup');
+        const [ducks, setDucks] = useState([]);
+        const [winner, setWinner] = useState(null);
+        const [timer, setTimer] = useState(0);
+        const [isMuted, setIsMuted] = useState(false);
+        const [raceDuration, setRaceDuration] = useState(10);
+        
+        const requestRef = useRef(null);
+        const previousTimeRef = useRef(0);
+        const startTimeRef = useRef(0);
+        const isRacingRef = useRef(false);
+
+        useEffect(() => {
+          const initialNames = ['Rory', 'Ilia', 'Rozalyn', 'George', 'Ian'];
+          const initialDucks = initialNames.map((name, idx) => ({
+            id: Math.random().toString(36).substr(2, 9),
+            name,
+            color: JSON.stringify(DUCK_COLORS[idx % DUCK_COLORS.length]),
+            avatarUrl: generateUniqueDuckSvg(),
+            progress: 0,
+            speed: 0,
+            state: 'idle',
+            stateTimer: 0,
+            reactionTime: 0,
+            waddleOffset: Math.random() * 100,
+            speedMod: 1.0, 
+            targetSpeedMod: 1.0 
+          }));
+          setDucks(initialDucks);
+        }, []);
+
+        const handleAddDuck = (name) => {
+          if (!name.trim()) return;
+          setDucks(prev => {
+            const newDuck = {
+              id: Math.random().toString(36).substr(2, 9),
+              name: name.trim(),
+              color: JSON.stringify(DUCK_COLORS[prev.length % DUCK_COLORS.length]),
+              avatarUrl: generateUniqueDuckSvg(),
+              progress: 0,
+              speed: 0,
+              state: 'idle',
+              stateTimer: 0,
+              reactionTime: 0,
+              waddleOffset: Math.random() * 100,
+              speedMod: 1.0,
+              targetSpeedMod: 1.0
+            };
+            return [...prev, newDuck];
+          });
+        };
+
+        const handleRemoveDuck = (id) => {
+          setDucks(prev => prev.filter(d => d.id !== id));
+        };
+
+        const handleClearDucks = () => {
+          if (confirm('Tüm listeyi silmek istediğinize emin misiniz?')) {
+              setDucks([]);
+          }
+        };
+
+        const handleShuffle = () => {
+          setDucks(prev => {
+              const shuffled = [...prev];
+              for (let i = shuffled.length - 1; i > 0; i--) {
+                  const j = Math.floor(Math.random() * (i + 1));
+                  [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+              }
+              return shuffled.map((d, idx) => ({
+                  ...d,
+                  color: JSON.stringify(DUCK_COLORS[idx % DUCK_COLORS.length]),
+                  avatarUrl: generateUniqueDuckSvg() 
+              }));
+          });
+        };
+
+        const startRace = () => {
+          if (ducks.length < 2) return;
+          
+          setDucks(prev => prev.map(d => ({ 
+            ...d, 
+            progress: 0, 
+            speed: 0,
+            rank: undefined,
+            state: 'idle',
+            stateTimer: 0,
+            reactionTime: Math.random() * 800,
+            speedMod: 0.9 + Math.random() * 0.2, 
+            targetSpeedMod: 1.0
+          })));
+          
+          setWinner(null);
+          setTimer(0);
+          setGameState('racing');
+          isRacingRef.current = true;
+          startTimeRef.current = Date.now();
+          previousTimeRef.current = Date.now();
+          
+          requestRef.current = requestAnimationFrame(animateRace);
+        };
+
+        const resetGame = () => {
+          isRacingRef.current = false;
+          if (requestRef.current) cancelAnimationFrame(requestRef.current);
+          setGameState('setup');
+          setWinner(null);
+          setTimer(0);
+          setDucks(prev => prev.map(d => ({ ...d, progress: 0, speed: 0, rank: undefined, state: 'idle' })));
+        };
+
+        const restartRace = () => {
+          startRace();
+        };
+
+        const formatTime = (ms) => {
+          const minutes = Math.floor(ms / 60000);
+          const seconds = Math.floor((ms % 60000) / 1000);
+          const centiseconds = Math.floor((ms % 1000) / 10);
+          return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${centiseconds.toString().padStart(2, '0')}`;
+        };
+
+        const animateRace = (time) => {
+          if (!isRacingRef.current) return;
+
+          const currentTime = Date.now();
+          const elapsedTime = currentTime - startTimeRef.current;
+          const deltaTime = Math.min(currentTime - previousTimeRef.current, 50); 
+          previousTimeRef.current = currentTime;
+          
+          setTimer(elapsedTime);
+
+          setDucks(prevDucks => {
+            let raceFinished = false;
+            let currentWinner = null;
+            const maxProgress = Math.max(...prevDucks.map(d => d.progress));
+
+            const updatedDucks = prevDucks.map(duck => {
+              if (duck.rank) return duck;
+              if (elapsedTime < duck.reactionTime) return duck;
+
+              let newDuck = { ...duck };
+
+              // --- SPEED DRIFT MECHANIC ---
+              // Change target speed occasionally
+              if (Math.random() < 0.02) { 
+                 // Drifts between 0.8x and 1.2x
+                 newDuck.targetSpeedMod = 0.8 + Math.random() * 0.4;
+              }
+
+              // Smoothly interpolate current speedMod to target
+              newDuck.speedMod += (newDuck.targetSpeedMod - newDuck.speedMod) * 0.02;
+
+              // --- TARGET VELOCITY ---
+              const idealVelocityPerMs = 105 / ((raceDuration * 1000) - 500); 
+
+              // Very mild rubber banding (2% max)
+              const distanceToLeader = maxProgress - newDuck.progress;
+              let rubberBandFactor = 1.0;
+              
+              if (distanceToLeader > 0) {
+                  rubberBandFactor = 1 + (Math.min(distanceToLeader, 20) * 0.001);
+              }
+
+              // Calculate final speed multiplier
+              const waddle = Math.sin((currentTime / 600) + newDuck.waddleOffset) * 0.05; 
+              const targetMultiplier = (newDuck.speedMod + waddle) * rubberBandFactor;
+
+              // Apply Momentum
+              const lerpFactor = 0.05;
+              newDuck.speed = duck.speed + (targetMultiplier - duck.speed) * lerpFactor;
+
+              const moveAmount = idealVelocityPerMs * newDuck.speed * deltaTime;
+              newDuck.progress = duck.progress + moveAmount;
+
+              // Set State for CSS Animation
+              newDuck.state = 'running';
+
+              if (newDuck.progress >= 100) {
+                  const finishedCount = prevDucks.filter(d => d.rank !== undefined).length;
+                  const rank = finishedCount + 1;
+                  
+                  if (rank === 1) {
+                      raceFinished = true;
+                      currentWinner = { ...newDuck, progress: 100, rank: 1 };
+                      return currentWinner;
+                  }
+                  return { ...newDuck, progress: 100, rank };
+              }
+
+              return newDuck;
+            });
+
+            if (raceFinished && currentWinner) {
+              setWinner(currentWinner);
+              setTimeout(() => {
+                   isRacingRef.current = false;
+                   if(requestRef.current) cancelAnimationFrame(requestRef.current);
+                   setGameState('finished');
+              }, 1000);
+            }
+            
+            if (!updatedDucks.some(d => !d.rank)) {
+               isRacingRef.current = false;
+               if(requestRef.current) cancelAnimationFrame(requestRef.current);
+               setGameState('finished');
             }
 
-            options.push(value);
-            input.value = '';
-            updateOptionsList();
-            updateStartButton();
-        }
+            return updatedDucks;
+          });
 
-        function removeOption(index) {
-            options.splice(index, 1);
-            updateOptionsList();
-            updateStartButton();
-        }
+          if (isRacingRef.current) {
+              requestRef.current = requestAnimationFrame(animateRace);
+          }
+        };
 
-        function updateOptionsList() {
-            const list = document.getElementById('optionsList');
-            list.innerHTML = '';
+        useEffect(() => {
+          return () => {
+            isRacingRef.current = false;
+            if (requestRef.current) {
+              cancelAnimationFrame(requestRef.current);
+            }
+          };
+        }, []);
 
-            options.forEach((option, index) => {
-                const tag = document.createElement('div');
-                tag.className = 'option-tag';
-                tag.innerHTML = `
-                    <span>${option}</span>
-                    <button class="remove-btn" onclick="removeOption(${index})">×</button>
-                `;
-                list.appendChild(tag);
-            });
-        }
+        return e('div', { className: "h-screen w-full bg-sky-300 relative overflow-hidden flex flex-col font-sans" },
+          // Header
+          e('div', { className: "z-50 px-4 py-3 flex justify-between items-start bg-gradient-to-b from-black/40 to-transparent absolute top-0 w-full pointer-events-none h-24" },
+              // Left
+              e('div', { className: "flex flex-col gap-2 pointer-events-auto" },
+                   e('div', { className: "flex gap-1" },
+                      e('button', { 
+                        onClick: () => setIsMuted(!isMuted),
+                        className: "bg-black/80 hover:bg-black text-white p-2 rounded border-2 border-white/20 transition-all"
+                      }, isMuted ? e(VolumeX, { size: 24 }) : e(Volume2, { size: 24 }))
+                   ),
+                   gameState === 'setup' && e('button', { 
+                        onClick: handleShuffle,
+                        className: "bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-bold border-2 border-green-800 shadow-md flex items-center gap-2"
+                      }, e(Shuffle, { size: 16 }), 'Karıştır')
+              ),
+              // Center
+              e('div', { className: "bg-slate-200 border-4 border-slate-700 rounded-xl px-6 py-1 shadow-2xl transform translate-y-2" },
+                  e('div', { className: "font-digital text-6xl text-slate-900 tracking-widest leading-none" }, formatTime(timer))
+              ),
+              // Right
+              e('div', { className: "flex flex-col gap-2 pointer-events-auto items-end" },
+                  gameState !== 'setup' && e('button', { 
+                          onClick: resetGame,
+                          className: "bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded border-b-4 border-red-700 active:border-b-0 active:translate-y-1 transition-all"
+                       }, 'Durdur / Sıfırla'),
+                   gameState === 'setup' && e('div', { className: "text-white font-bold drop-shadow-md text-right" },
+                          e('p', { className: "text-2xl" }, 'HAZIRLIK'),
+                          e('p', { className: "text-sm opacity-80" }, `${ducks.length} Yarışmacı`)
+                      )
+              )
+          ),
+          // Main Content
+          e('div', { className: "flex-1 relative z-0 h-full" },
+                gameState === 'setup' ? 
+                  e('div', { className: "h-full flex items-center justify-center bg-black/20 backdrop-blur-sm pt-20" },
+                     e(SetupScreen, { 
+                        ducks, 
+                        onAdd: handleAddDuck, 
+                        onRemove: handleRemoveDuck, 
+                        onClear: handleClearDucks,
+                        onStart: startRace, 
+                        raceDuration,
+                        setRaceDuration
+                     })
+                  )
+                : e(RaceTrack, { ducks })
+          ),
+          gameState === 'finished' && winner && e(WinnerModal, { 
+                winner, 
+                onRestart: restartRace, 
+                onReset: resetGame, 
+                timer: formatTime(timer)
+          })
+        );
+      };
 
-        function updateStartButton() {
-            document.getElementById('startBtn').disabled = options.length < 2;
-        }
-
-        function startRace() {
-            document.getElementById('setupPanel').style.display = 'none';
-            document.getElementById('raceContainer').style.display = 'block';
-
-            const track = document.getElementById('track');
-            track.innerHTML = '<div class="finish-line"></div>';
-
-            // Create lanes
-            options.forEach((option, index) => {
-                const lane = document.createElement('div');
-                lane.className = 'lane';
-                lane.innerHTML = `
-                    <div class="lane-number">${index + 1}</div>
-                    <div class="duck" id="duck${index}">${duckColors[index]}</div>
-                    <div style="position: absolute; left: 60px; top: 50%; transform: translateY(-50%); color: rgba(0,0,0,0.5); font-weight: bold;">${option}</div>
-                `;
-                track.appendChild(lane);
-            });
-
-            // Start race after short delay
-            setTimeout(() => {
-                const winner = Math.floor(Math.random() * options.length);
-                
-                options.forEach((option, index) => {
-                    const duck = document.getElementById(`duck${index}`);
-                    const randomDelay = index === winner ? 0 : Math.random() * 500 + 300;
-                    
-                    setTimeout(() => {
-                        duck.classList.add('racing');
-                    }, randomDelay);
-                });
-
-                // Show result after race
-                setTimeout(() => {
-                    showResult(options[winner]);
-                }, 3500);
-            }, 500);
-        }
-
-        function showResult(winner) {
-            document.getElementById('winnerText').textContent = winner;
-            document.getElementById('resultPanel').style.display = 'flex';
-        }
-
-        function resetRace() {
-            document.getElementById('resultPanel').style.display = 'none';
-            document.getElementById('raceContainer').style.display = 'none';
-            document.getElementById('setupPanel').style.display = 'block';
-        }
-
-        // Initialize with example options
-        ['Pizza', 'Burger', 'Kebap'].forEach(opt => {
-            options.push(opt);
-        });
-        updateOptionsList();
-        updateStartButton();
+      const root = ReactDOM.createRoot(document.getElementById('root'));
+      root.render(e(React.StrictMode, null, e(App)));
     </script>
+  <script type="module" src="/index.tsx"></script>
 </body>
 </html>
