@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sumo Güreşi - Karar Ver!</title>
+    <title>Sumo Savaşı 🥋</title>
     <style>
         * {
             margin: 0;
@@ -12,617 +12,1136 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
-        }
-
-        .back-btn {
-            background: rgba(255,255,255,0.9);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-        }
-
-        .back-btn:hover {
-            background: white;
-            transform: translateX(-5px);
         }
 
         .container {
             max-width: 900px;
-            margin: 0 auto;
+            width: 100%;
         }
 
         .header {
             text-align: center;
-            color: white;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
-        .header h1 {
-            font-size: 3em;
+        .title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #ff8c42;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .header p {
-            font-size: 1.2em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        .subtitle {
+            color: rgba(255,255,255,0.95);
+            font-size: 1.2rem;
+            font-weight: 500;
         }
 
-        .setup-panel {
+        .game-card {
             background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
         }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #1e293b;
+            text-align: center;
             margin-bottom: 10px;
         }
 
-        input[type="text"] {
+        .section-subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .input-area {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .player-input {
             flex: 1;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
+            padding: 16px 20px;
+            border: 3px solid #e2e8f0;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+            background: #f8fafc;
         }
 
-        input[type="text"]:focus {
+        .player-input:focus {
             outline: none;
-            border-color: #43e97b;
-        }
-
-        .add-btn, .start-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
+            border-color: #8b5cf6;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.1);
         }
 
         .add-btn {
-            background: #43e97b;
+            padding: 16px 32px;
+            background: #8b5cf6;
             color: white;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
         }
 
         .add-btn:hover {
-            background: #38d66f;
-            transform: scale(1.05);
+            background: #7c3aed;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(139, 92, 246, 0.5);
         }
 
-        .options-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .option-tag {
-            background: #e8fff3;
-            padding: 10px 15px;
-            border-radius: 10px;
+        .quick-actions {
             display: flex;
-            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .quick-btn {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
             align-items: center;
-            border: 2px solid #43e97b;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .quick-btn:hover::before {
+            left: 100%;
+        }
+
+        .quick-btn-example {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .quick-btn-example:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .quick-btn-clear {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .quick-btn-clear:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .player-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+            min-height: 60px;
+        }
+
+        .player-chip {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            animation: chipIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes chipIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .player-name {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .remove-btn {
-            background: #ff4757;
-            color: white;
+            background: rgba(255, 255, 255, 0.25);
             border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .remove-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.15);
         }
 
         .start-btn {
             width: 100%;
-            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            padding: 20px;
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
             color: white;
-            font-size: 20px;
-            padding: 16px;
-            margin-top: 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 1.4rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .start-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(67, 233, 123, 0.3);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 32px rgba(239, 68, 68, 0.5);
         }
 
         .start-btn:disabled {
-            opacity: 0.5;
+            opacity: 0.4;
             cursor: not-allowed;
+            transform: none;
         }
 
-        /* Arena */
-        .arena-container {
-            display: none;
-            background: white;
+        .canvas-wrapper {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
             border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            background: #e8f8f3;
         }
 
-        .arena-title {
-            text-align: center;
-            color: #2d3436;
-            font-size: 2em;
-            margin-bottom: 30px;
+        .game-hud {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
 
-        #arenaCanvas {
-            display: block;
-            margin: 0 auto;
-            background: #f5f5f5;
-            border-radius: 15px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        .hud-badge {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 20px;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 16px rgba(16, 222, 130, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1e293b;
+            border: 2px solid rgba(16, 222, 130, 0.3);
         }
 
-        .remaining-count {
-            text-align: center;
-            font-size: 1.5em;
-            margin-top: 20px;
-            color: #2d3436;
-            font-weight: bold;
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background: #10de82;
+            border-radius: 50%;
+            animation: dotPulse 2s infinite;
         }
 
-        .result-panel {
+        @keyframes dotPulse {
+            0%, 100% { 
+                opacity: 1; 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.6;
+                transform: scale(0.9);
+            }
+        }
+
+        .danger-badge {
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+        }
+
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 8px 32px rgba(0,0,0,0.5);
+            animation: countScale 1s ease-out;
+        }
+
+        @keyframes countScale {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .action-btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .reset-btn {
+            background: #ef4444;
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .reset-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
             z-index: 1000;
+            align-items: center;
+            justify-content: center;
         }
 
-        .result-content {
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
             background: white;
             padding: 50px;
-            border-radius: 20px;
+            border-radius: 32px;
             text-align: center;
             max-width: 500px;
-            animation: popIn 0.5s;
+            animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
         }
 
-        @keyframes popIn {
-            0% {
-                transform: scale(0.5) rotate(-10deg);
+        @keyframes modalPop {
+            from {
                 opacity: 0;
+                transform: scale(0.7);
             }
-            100% {
-                transform: scale(1) rotate(0deg);
+            to {
                 opacity: 1;
+                transform: scale(1);
             }
         }
 
-        .winner-emoji {
-            font-size: 100px;
+        .trophy {
+            font-size: 6rem;
             margin-bottom: 20px;
-            animation: bounce 0.5s infinite;
+            animation: trophyBounce 0.6s ease-out;
         }
 
-        @keyframes bounce {
+        @keyframes trophyBounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-20px); }
         }
 
-        .winner-text {
-            font-size: 2.5em;
-            color: #43e97b;
-            font-weight: bold;
+        .winner-name {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #10de82, #0abf8c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .winner-subtitle {
+            font-size: 1.3rem;
+            color: #64748b;
             margin-bottom: 30px;
         }
 
-        .action-btns {
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .notification {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 18px 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+            font-weight: 600;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease-out;
             display: flex;
-            gap: 15px;
+            align-items: center;
+            gap: 10px;
         }
 
-        .action-btn {
-            flex: 1;
-            padding: 15px;
+        .notification.warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #fbbf24;
+        }
+
+        .notification.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .quick-btn {
+            padding: 14px 24px;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
         }
 
-        .retry-btn {
-            background: #43e97b;
+        .quick-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .quick-btn:hover::before {
+            left: 100%;
+        }
+
+        .quick-btn-example {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
-        .retry-btn:hover {
-            background: #38d66f;
-            transform: translateY(-2px);
+        .quick-btn-example:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .home-btn {
-            background: #636e72;
+        .quick-btn-clear {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
         }
 
-        .home-btn:hover {
-            background: #535c60;
-            transform: translateY(-2px);
+        .quick-btn-clear:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
         }
 
         @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
+            .title {
+                font-size: 2.5rem;
             }
-
-            #arenaCanvas {
-                width: 100% !important;
-                height: auto !important;
+            
+            .input-area {
+                flex-direction: column;
             }
-
-            .result-content {
-                padding: 30px;
-                margin: 20px;
+            
+            .player-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
         }
     </style>
 </head>
 <body>
-    <button class="back-btn" onclick="location.href='index.html'">← Ana Sayfa</button>
-
     <div class="container">
         <div class="header">
-            <h1>🥋 Sumo Güreşi</h1>
-            <p>Son kalan kazansın!</p>
+            <h1 class="title">Sumo Savaşı 🥋</h1>
+            <p class="subtitle">Arenada kalan son kişi kazanır!</p>
         </div>
 
-        <div class="setup-panel" id="setupPanel">
-            <div class="input-group">
-                <div class="input-row">
-                    <input type="text" id="optionInput" placeholder="Seçenek ekle (örn: Pizza, Burger...)">
-                    <button class="add-btn" onclick="addOption()">+ Ekle</button>
+        <div class="game-card">
+            <!-- Setup Screen -->
+            <div id="setupScreen">
+                <h2 class="section-title">Seçenekleri Belirle</h2>
+                <p class="section-subtitle">En az 2, en fazla 12 seçenek ekleyebilirsin.</p>
+
+                <div class="input-area">
+                    <input 
+                        type="text" 
+                        id="playerInput" 
+                        class="player-input" 
+                        placeholder="Bir seçenek yazın (örn: Pizza)" 
+                        maxlength="20"
+                    >
+                    <button class="add-btn" onclick="addPlayer()">➕</button>
                 </div>
+
+                <div class="quick-actions">
+                    <button class="quick-btn quick-btn-example" onclick="loadRandomData()">
+                        <span class="btn-icon">🎲</span>
+                        <span>Rastgele Oluştur</span>
+                    </button>
+                    <button class="quick-btn quick-btn-clear" onclick="clearAllPlayers()">
+                        <span class="btn-icon">🗑️</span>
+                        <span>Tümünü Temizle</span>
+                    </button>
+                </div>
+
+                <div class="player-grid" id="playerGrid">
+                    <div class="empty-state">Henüz seçenek eklenmedi</div>
+                </div>
+
+                <button class="start-btn" id="startBtn" onclick="startGame()" disabled>
+                    Başlat
+                </button>
             </div>
 
-            <div class="options-list" id="optionsList"></div>
+            <!-- Game Screen -->
+            <div id="gameScreen" style="display: none;">
+                <div class="canvas-wrapper">
+                    <canvas id="canvas" width="800" height="600"></canvas>
+                    <div class="game-hud">
+                        <div class="hud-badge">
+                            <div class="status-dot"></div>
+                            Kalan: <strong id="remaining">0</strong>
+                        </div>
+                        <div class="hud-badge danger-badge" id="dangerBadge" style="display: none;">
+                            ⚠️ Arena Daralıyor
+                        </div>
+                    </div>
+                    <div id="countdown" class="countdown" style="display: none;"></div>
+                </div>
 
-            <button class="start-btn" id="startBtn" onclick="startBattle()" disabled>
-                ⚔️ Dövüşü Başlat!
-            </button>
-        </div>
-
-        <div class="arena-container" id="arenaContainer">
-            <h2 class="arena-title">🥋 Arena</h2>
-            <canvas id="arenaCanvas"></canvas>
-            <div class="remaining-count" id="remainingCount"></div>
+                <div class="action-bar">
+                    <button class="action-btn reset-btn" onclick="resetGame()">🔄 Yeniden Başlat</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="result-panel" id="resultPanel">
-        <div class="result-content">
-            <div class="winner-emoji">🏆</div>
-            <h2 style="color: #43e97b; margin-bottom: 20px;">Kazanan Sumo!</h2>
-            <div class="winner-text" id="winnerText"></div>
-            <div class="action-btns">
-                <button class="action-btn retry-btn" onclick="resetBattle()">🔄 Yeni Dövüş</button>
-                <button class="action-btn home-btn" onclick="location.href='index.html'">🏠 Ana Sayfa</button>
-            </div>
+    <!-- Winner Modal -->
+    <div class="modal" id="winnerModal">
+        <div class="modal-box">
+            <div class="trophy">🏆</div>
+            <div class="winner-name" id="winnerName">-</div>
+            <p class="winner-subtitle">Kazandı!</p>
+            <button class="start-btn" onclick="resetGame()">Yeni Oyun</button>
         </div>
     </div>
 
     <script>
-        let options = [];
-        let sumos = [];
-        let canvas, ctx;
-        let animationId;
+        // Optimal Game Settings (Hidden from user)
+        const PHYSICS = {
+            speed: 0.65,  // Daha kontrollü hız
+            friction: 0.97,
+            bounce: 0.90,  // Güçlü itme
+            turnSpeed: 0.20,
+            dashForce: 1.8,  // Dengeli dash
+            crawlForce: 0.15,
+            antiOrbitPull: 0.18,  // Güçlü anti-orbital
+            pushForce: 1.2,  // Yapışmayı engelleyen güçlü itme
+            separation: 0.75  // Collision ayrılma katsayısı
+        };
 
-        // Renk paleti
-        const sumoColors = [
-            { body: '#FF6B6B', belt: '#4ECDC4' },
-            { body: '#FFA07A', belt: '#98D8C8' },
-            { body: '#F7DC6F', belt: '#BB8FCE' },
-            { body: '#85C1E2', belt: '#F8B195' },
-            { body: '#C06C84', belt: '#F67280' },
-            { body: '#6C5CE7', belt: '#FDCB6E' },
-            { body: '#00B894', belt: '#E17055' },
-            { body: '#FD79A8', belt: '#A29BFE' }
+        const ARENA = {
+            baseSize: 220,
+            shrinkEnabled: true,
+            shrinkSpeed: 0.15,
+            shrinkThreshold: 130
+        };
+
+        const GAME = {
+            maxPlayers: 12,
+            sumoRadius: 24,
+            countdownDuration: 3
+        };
+
+        // State
+        let players = [];
+        let sumos = [];
+        let gameActive = false;
+        let arenaRadius = ARENA.baseSize;
+        let animationId = null;
+        let countdownInterval = null;
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.textContent = message;
+            document.body.appendChild(notif);
+            
+            setTimeout(() => {
+                notif.style.opacity = '0';
+                notif.style.transform = 'translateX(100px)';
+                setTimeout(() => notif.remove(), 300);
+            }, 2500);
+        }
+
+        // Random Dataset Examples
+        const randomDatasets = [
+            ['Pizza', 'Burger', 'Sushi', 'Kebap', 'Döner', 'Mantı'],
+            ['Futbol', 'Basketbol', 'Voleybol', 'Tenis', 'Yüzme'],
+            ['İstanbul', 'Ankara', 'İzmir', 'Antalya', 'Bursa'],
+            ['Kedi', 'Köpek', 'Kuş', 'Balık', 'Tavşan', 'Hamster'],
+            ['Kırmızı', 'Mavi', 'Yeşil', 'Sarı', 'Mor', 'Turuncu'],
+            ['JavaScript', 'Python', 'Java', 'C++', 'Ruby', 'Go'],
+            ['Netflix', 'YouTube', 'Spotify', 'Disney+', 'Twitch'],
+            ['Kahve', 'Çay', 'Su', 'Meyve Suyu', 'Kola', 'Limonata']
         ];
 
-        document.getElementById('optionInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') addOption();
-        });
+        function loadRandomData() {
+            // Otomatik temizlik - confirm olmadan
+            players = [];
+            document.getElementById('playerInput').value = '';
+            
+            const dataset = randomDatasets[Math.floor(Math.random() * randomDatasets.length)];
+            
+            dataset.forEach(name => {
+                players.push({
+                    id: Date.now() + Math.random(),
+                    name: name
+                });
+            });
+            
+            renderPlayers();
+            showNotification('✨ Rastgele veri oluşturuldu!', 'success');
+        }
 
-        function addOption() {
-            const input = document.getElementById('optionInput');
-            const value = input.value.trim();
+        function clearAllPlayers() {
+            if (players.length === 0) {
+                showNotification('⚠️ Silinecek seçenek yok', 'warning');
+                return;
+            }
+            
+            if (confirm('Tüm seçenekleri silmek istediğinize emin misiniz?')) {
+                // Array temizle
+                players.splice(0, players.length);
+                
+                // Input temizle
+                const inputEl = document.getElementById('playerInput');
+                inputEl.value = '';
+                
+                // Grid'i doğrudan güncelle
+                const gridEl = document.getElementById('playerGrid');
+                gridEl.innerHTML = '<div class="empty-state">Henüz seçenek eklenmedi</div>';
+                
+                // Start butonunu disable et
+                const btnEl = document.getElementById('startBtn');
+                btnEl.disabled = true;
+                
+                showNotification('✅ Tüm seçenekler temizlendi', 'success');
+            }
+        }
 
-            if (!value) return;
+        // Colors
+        const bodyTones = ['#ffdbac', '#f1c27d', '#e0ac69', '#8d5524', '#c68642'];
+        const beltColors = ['#ef4444', '#3b82f6', '#22c55e', '#a855f7', '#f97316', 
+                           '#06b6d4', '#ec4899', '#eab308', '#14b8a6', '#6366f1'];
 
-            if (options.length >= 8) {
-                alert('Maksimum 8 seçenek ekleyebilirsin!');
+        // Player Management
+        function addPlayer() {
+            const input = document.getElementById('playerInput');
+            const name = input.value.trim();
+
+            if (!name) return;
+            
+            if (players.length >= GAME.maxPlayers) {
+                showNotification(`⚠️ En fazla ${GAME.maxPlayers} seçenek eklenebilir!`, 'warning');
                 return;
             }
 
-            options.push(value);
-            input.value = '';
-            updateOptionsList();
-            updateStartButton();
-        }
+            if (players.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                showNotification('⚠️ Bu seçenek daha önce eklendi!', 'warning');
+                input.focus();
+                return;
+            }
 
-        function removeOption(index) {
-            options.splice(index, 1);
-            updateOptionsList();
-            updateStartButton();
-        }
-
-        function updateOptionsList() {
-            const list = document.getElementById('optionsList');
-            list.innerHTML = '';
-
-            options.forEach((option, index) => {
-                const tag = document.createElement('div');
-                tag.className = 'option-tag';
-                tag.innerHTML = `
-                    <span>${option}</span>
-                    <button class="remove-btn" onclick="removeOption(${index})">×</button>
-                `;
-                list.appendChild(tag);
+            players.push({
+                id: Date.now(),
+                name: name
             });
+
+            input.value = '';
+            input.focus();
+            renderPlayers();
         }
 
-        function updateStartButton() {
-            document.getElementById('startBtn').disabled = options.length < 2;
+        function removePlayer(id) {
+            players = players.filter(p => p.id !== id);
+            renderPlayers();
         }
 
-        function startBattle() {
-            document.getElementById('setupPanel').style.display = 'none';
-            document.getElementById('arenaContainer').style.display = 'block';
+        function renderPlayers() {
+            const grid = document.getElementById('playerGrid');
             
-            initArena();
-            createSumos();
+            if (players.length === 0) {
+                grid.innerHTML = '<div class="empty-state">Henüz seçenek eklenmedi</div>';
+                document.getElementById('startBtn').disabled = true;
+                return;
+            }
+
+            grid.innerHTML = players.map((p, i) => `
+                <div class="player-chip" style="animation-delay: ${i * 0.05}s">
+                    <span class="player-name">${p.name}</span>
+                    <button class="remove-btn" onclick="removePlayer(${p.id})">✕</button>
+                </div>
+            `).join('');
+
+            document.getElementById('startBtn').disabled = players.length < 2;
+        }
+
+        // Game Control
+        function startGame() {
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+
+            // Countdown
+            let count = GAME.countdownDuration;
+            const countdownEl = document.getElementById('countdown');
+            countdownEl.style.display = 'block';
+            countdownEl.textContent = count;
+
+            countdownInterval = setInterval(() => {
+                count--;
+                if (count > 0) {
+                    countdownEl.textContent = count;
+                } else if (count === 0) {
+                    countdownEl.textContent = 'GO!';
+                } else {
+                    countdownEl.style.display = 'none';
+                    clearInterval(countdownInterval);
+                    initGame();
+                }
+            }, 1000);
+        }
+
+        function initGame() {
+            arenaRadius = ARENA.baseSize;
+            gameActive = true;
+
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            sumos = players.map((player, i) => {
+                const angle = (i / players.length) * Math.PI * 2;
+                const startDist = arenaRadius * 0.7;
+
+                return {
+                    id: player.id,
+                    name: player.name,
+                    bodyColor: bodyTones[i % bodyTones.length],
+                    beltColor: beltColors[i % beltColors.length],
+                    x: centerX + Math.cos(angle) * startDist,
+                    y: centerY + Math.sin(angle) * startDist,
+                    radius: GAME.sumoRadius,
+                    vx: 0,
+                    vy: 0,
+                    mass: 1 + Math.random() * 0.2,
+                    active: true,
+                    angle: angle + Math.PI,
+                    cooldown: Math.random() * 30
+                };
+            });
+
+            updateRemaining();
             animate();
         }
 
-        function initArena() {
-            canvas = document.getElementById('arenaCanvas');
-            ctx = canvas.getContext('2d');
-            
-            const baseSize = 500;
-            const size = Math.min(baseSize + (options.length * 30), 700);
-            canvas.width = size;
-            canvas.height = size;
-        }
+        function updatePhysics() {
+            if (!gameActive) return;
 
-        function createSumos() {
-            sumos = [];
-            const arenaRadius = (canvas.width / 2) - 60;
             const centerX = canvas.width / 2;
             const centerY = canvas.height / 2;
 
-            options.forEach((name, index) => {
-                const angle = (index / options.length) * Math.PI * 2;
-                const distance = arenaRadius * 0.6;
-                
-                const sumo = {
-                    name: name,
-                    x: centerX + Math.cos(angle) * distance,
-                    y: centerY + Math.sin(angle) * distance,
-                    radius: 25,
-                    vx: (Math.random() - 0.5) * 3,
-                    vy: (Math.random() - 0.5) * 3,
-                    color: sumoColors[index % sumoColors.length],
-                    active: true,
-                    pushForce: 0
-                };
-                
-                sumos.push(sumo);
+            // Arena shrinking
+            if (ARENA.shrinkEnabled && arenaRadius > ARENA.shrinkThreshold) {
+                arenaRadius -= ARENA.shrinkSpeed;
+                document.getElementById('dangerBadge').style.display = 'block';
+            } else {
+                document.getElementById('dangerBadge').style.display = 'none';
+            }
+
+            let activeCount = 0;
+            let lastActive = null;
+
+            // First pass: count active sumos
+            sumos.forEach(s => {
+                if (s.active) activeCount++;
             });
 
-            updateRemainingCount();
+            // POWER BOOST: Son 2 oyuncu için minimal güç çarpanı
+            const finalBattleBoost = activeCount === 2 ? 1.12 : 1.0;
+
+            sumos.forEach((s1, i) => {
+                if (!s1.active) return;
+                lastActive = s1;
+
+                // Find closest target
+                let target = null;
+                let minDist = Infinity;
+
+                sumos.forEach((s2, j) => {
+                    if (i !== j && s2.active) {
+                        const dx = s2.x - s1.x;
+                        const dy = s2.y - s1.y;
+                        const dist = Math.sqrt(dx*dx + dy*dy);
+                        if (dist < minDist) {
+                            minDist = dist;
+                            target = s2;
+                        }
+                    }
+                });
+
+                if (target) {
+                    const dx = target.x - s1.x;
+                    const dy = target.y - s1.y;
+                    const targetAngle = Math.atan2(dy, dx);
+                    
+                    // Adaptive turning
+                    const turnSpeed = minDist < 100 ? PHYSICS.turnSpeed * 1.5 : PHYSICS.turnSpeed;
+                    
+                    let diff = targetAngle - s1.angle;
+                    while (diff < -Math.PI) diff += Math.PI * 2;
+                    while (diff > Math.PI) diff -= Math.PI * 2;
+                    s1.angle += diff * turnSpeed;
+
+                    const isAligned = Math.abs(diff) < 0.8;
+
+                    // Attack behavior
+                    if (s1.cooldown <= 0) {
+                        if (isAligned) {
+                            // Powerful dash with final battle boost
+                            s1.vx += Math.cos(s1.angle) * PHYSICS.dashForce * PHYSICS.speed * finalBattleBoost;
+                            s1.vy += Math.sin(s1.angle) * PHYSICS.dashForce * PHYSICS.speed * finalBattleBoost;
+                            s1.cooldown = 30 + Math.random() * 30;
+                        }
+                    } else {
+                        s1.cooldown--;
+
+                        // ANTI-ORBITAL MECHANICS
+                        if (minDist < 150) {
+                            // Strong pull towards target center
+                            const pullX = (dx / minDist) * PHYSICS.antiOrbitPull * PHYSICS.speed * finalBattleBoost;
+                            const pullY = (dy / minDist) * PHYSICS.antiOrbitPull * PHYSICS.speed * finalBattleBoost;
+                            s1.vx += pullX;
+                            s1.vy += pullY;
+                        }
+
+                        // Very close - direct push
+                        if (minDist < 60) {
+                            const pushX = (dx / minDist) * PHYSICS.pushForce * finalBattleBoost;
+                            const pushY = (dy / minDist) * PHYSICS.pushForce * finalBattleBoost;
+                            s1.vx += pushX;
+                            s1.vy += pushY;
+                        }
+
+                        // Forward crawl with boost
+                        s1.vx += Math.cos(s1.angle) * PHYSICS.crawlForce * PHYSICS.speed * finalBattleBoost;
+                        s1.vy += Math.sin(s1.angle) * PHYSICS.crawlForce * PHYSICS.speed * finalBattleBoost;
+                    }
+                }
+
+                // Apply physics
+                s1.x += s1.vx;
+                s1.y += s1.vy;
+                s1.vx *= PHYSICS.friction;
+                s1.vy *= PHYSICS.friction;
+
+                // Boundary check
+                const distFromCenter = Math.sqrt(
+                    Math.pow(s1.x - centerX, 2) + Math.pow(s1.y - centerY, 2)
+                );
+                if (distFromCenter > arenaRadius + s1.radius) {
+                    s1.active = false;
+                }
+
+                // Collisions with HIGH BOUNCE
+                sumos.forEach((s2, j) => {
+                    if (i >= j || !s2.active) return;
+
+                    const dx = s2.x - s1.x;
+                    const dy = s2.y - s1.y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    const minDist = s1.radius + s2.radius;
+
+                    if (dist < minDist) {
+                        const nx = dx / dist;
+                        const ny = dy / dist;
+
+                        const dvx = s2.vx - s1.vx;
+                        const dvy = s2.vy - s1.vy;
+                        const velAlongNormal = dvx * nx + dvy * ny;
+
+                        if (velAlongNormal > 0) return;
+
+                        // High bounce coefficient for strong separation
+                        const jVal = -(1 + PHYSICS.bounce) * velAlongNormal;
+                        const impulse = jVal / ((1/s1.mass) + (1/s2.mass));
+
+                        // Apply strong impulse
+                        s1.vx -= (1/s1.mass) * impulse * nx * 1.2;
+                        s1.vy -= (1/s1.mass) * impulse * ny * 1.2;
+                        s2.vx += (1/s2.mass) * impulse * nx * 1.2;
+                        s2.vy += (1/s2.mass) * impulse * ny * 1.2;
+
+                        // Strong anti-stick separation
+                        const overlap = minDist - dist;
+                        const correction = (overlap * PHYSICS.separation) / ((1/s1.mass) + (1/s2.mass));
+                        s1.x -= (1/s1.mass) * correction * nx;
+                        s1.y -= (1/s1.mass) * correction * ny;
+                        s2.x += (1/s2.mass) * correction * nx;
+                        s2.y += (1/s2.mass) * correction * ny;
+
+                        // Additional push to guarantee separation
+                        const pushAmount = 0.5;
+                        s1.vx -= nx * pushAmount;
+                        s1.vy -= ny * pushAmount;
+                        s2.vx += nx * pushAmount;
+                        s2.vy += ny * pushAmount;
+                    }
+                });
+            });
+
+            // Check winner
+            if (activeCount <= 1 && gameActive) {
+                gameActive = false;
+                if (lastActive) {
+                    setTimeout(() => {
+                        document.getElementById('winnerName').textContent = lastActive.name;
+                        document.getElementById('winnerModal').classList.add('show');
+                    }, 1000);
+                }
+            }
+
+            updateRemaining();
+        }
+
+        function draw() {
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#e8f8f3';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Arena
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, arenaRadius, 0, Math.PI * 2);
+            ctx.fillStyle = '#d1f4e8';
+            ctx.fill();
+            ctx.lineWidth = 12;
+            ctx.strokeStyle = '#10de82';
+            ctx.stroke();
+
+            // Danger zone
+            if (ARENA.shrinkEnabled && arenaRadius < ARENA.baseSize - 20) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, arenaRadius, 0, Math.PI * 2);
+                ctx.strokeStyle = 'rgba(239, 68, 68, 0.5)';
+                ctx.lineWidth = 12;
+                ctx.stroke();
+            }
+
+            // Draw sumos
+            sumos.forEach(s => {
+                if (!s.active) return;
+
+                ctx.save();
+                ctx.translate(s.x, s.y);
+                ctx.rotate(s.angle);
+
+                // Shadow
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.25)';
+                ctx.shadowBlur = 12;
+                ctx.shadowOffsetX = 4;
+                ctx.shadowOffsetY = 4;
+
+                // Body
+                ctx.beginPath();
+                ctx.arc(0, 0, s.radius, 0, Math.PI * 2);
+                ctx.fillStyle = s.bodyColor;
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                ctx.stroke();
+
+                ctx.shadowColor = 'transparent';
+
+                // Belt
+                ctx.fillStyle = s.beltColor;
+                ctx.fillRect(-s.radius, -8, s.radius * 2, 16);
+
+                // Head
+                ctx.beginPath();
+                ctx.arc(0, 0, s.radius * 0.35, 0, Math.PI * 2);
+                ctx.fillStyle = '#1e293b';
+                ctx.fill();
+
+                // Arms
+                ctx.beginPath();
+                ctx.arc(s.radius * 0.7, -s.radius * 0.5, 6, 0, Math.PI * 2);
+                ctx.arc(s.radius * 0.7, s.radius * 0.5, 6, 0, Math.PI * 2);
+                ctx.fillStyle = s.bodyColor;
+                ctx.fill();
+
+                ctx.restore();
+
+                // Name
+                ctx.fillStyle = '#475569';
+                ctx.font = 'bold 14px sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(s.name.substring(0, 12), s.x, s.y - s.radius - 10);
+            });
         }
 
         function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            // Draw arena
-            const centerX = canvas.width / 2;
-            const centerY = canvas.height / 2;
-            const arenaRadius = (canvas.width / 2) - 60;
-
-            // Arena border
-            ctx.strokeStyle = '#2d3436';
-            ctx.lineWidth = 8;
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, arenaRadius, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Arena inner circle
-            ctx.strokeStyle = '#dfe6e9';
-            ctx.lineWidth = 2;
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath();
-            ctx.arc(centerX, centerY, arenaRadius * 0.5, 0, Math.PI * 2);
-            ctx.stroke();
-            ctx.setLineDash([]);
-
-            // Update and draw sumos
-            sumos.forEach(sumo => {
-                if (!sumo.active) return;
-
-                // Merkeze çekim kuvveti (kase etkisi)
-                const dx = centerX - sumo.x;
-                const dy = centerY - sumo.y;
-                const distanceFromCenter = Math.sqrt(dx * dx + dy * dy);
-                const gravityStrength = 0.08;
-                
-                sumo.vx += (dx / distanceFromCenter) * gravityStrength;
-                sumo.vy += (dy / distanceFromCenter) * gravityStrength;
-
-                // Move
-                sumo.x += sumo.vx;
-                sumo.y += sumo.vy;
-
-                // Check arena boundary
-                const newDx = sumo.x - centerX;
-                const newDy = sumo.y - centerY;
-                const distance = Math.sqrt(newDx * newDx + newDy * newDy);
-
-                // Arena kenarında momentum bonusu
-                if (distance > arenaRadius * 0.75) {
-                    const pushMultiplier = 1.15;
-                    sumo.vx *= pushMultiplier;
-                    sumo.vy *= pushMultiplier;
-                }
-
-                if (distance + sumo.radius > arenaRadius) {
-                    sumo.active = false;
-                    updateRemainingCount();
-                    checkWinner();
-                    return;
-                }
-
-                // Friction (azaltıldı)
-                sumo.vx *= 0.985;
-                sumo.vy *= 0.985;
-
-                // Minimum hız garantisi
-                const speed = Math.sqrt(sumo.vx * sumo.vx + sumo.vy * sumo.vy);
-                if (speed < 0.3) {
-                    const angle = Math.random() * Math.PI * 2;
-                    sumo.vx += Math.cos(angle) * 0.5;
-                    sumo.vy += Math.sin(angle) * 0.5;
-                }
-
-                // Push force decay
-                if (sumo.pushForce > 0) {
-                    sumo.pushForce -= 0.5;
-                }
-
-                // Draw sumo
-                drawSumo(sumo);
-            });
-
-            // Check collisions
-            checkCollisions();
-
-            animationId = requestAnimationFrame(animate);
-        }
-
-        function drawSumo(sumo) {
-            // Body
-            ctx.fillStyle = sumo.color.body;
-            ctx.beginPath();
-            ctx.arc(sumo.x, sumo.y, sumo.radius, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Belt
-            ctx.strokeStyle = sumo.color.belt;
-            ctx.lineWidth = 6;
-            ctx.beginPath();
-            ctx.arc(sumo.x, sumo.y, sumo.radius * 0.7, 0, Math.PI * 2);
-            ctx.stroke();
-
-            // Face
-            ctx.fillStyle = '#2d3436';
-            ctx.beginPath();
-            ctx.arc(sumo.x - 8, sumo.y - 5, 3, 0, Math.PI * 2);
-            ctx.arc(sumo.x + 8, sumo.y - 5, 3, 0, Math.PI * 2);
-            ctx.fill();
-
-            // Name
-            ctx.fillStyle = '#2d3436';
-            ctx.font = 'bold 12px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText(sumo.name, sumo.x, sumo.y + sumo.radius + 20);
-        }
-
-        function checkCollisions() {
-            for (let i = 0; i < sumos.length; i++) {
-                if (!sumos[i].active) continue;
-                
-                for (let j = i + 1; j < sumos.length; j++) {
-                    if (!sumos[j].active) continue;
-                    
-                    const dx = sumos[j].x - sumos[i].x;
-                    const dy = sumos[j].y - sumos[i].y;
-                    const distance = Math.sqrt(dx * dx + dy * dy);
-                    const minDist = sumos[i].radius + sumos[j].radius;
-
-                    if (distance < minDist) {
-                        // Collision detected - AGRESİF MOD
-                        const angle = Math.atan2(dy, dx);
-                        const force = 7; // 2'den 7'ye çıkarıldı
-
-                        // Push apart with high force
-                        sumos[i].vx -= Math.cos(angle) * force;
-                        sumos[i].vy -= Math.sin(angle) * force;
-                        sumos[j].vx += Math.cos(angle) * force;
-                        sumos[j].vy += Math.sin(angle) * force;
-
-                        sumos[i].pushForce = 5;
-                        sumos[j].pushForce = 5;
-                    }
-                }
+            updatePhysics();
+            draw();
+            if (gameActive) {
+                animationId = requestAnimationFrame(animate);
             }
         }
 
-        function updateRemainingCount() {
-            const remaining = sumos.filter(s => s.active).length;
-            document.getElementById('remainingCount').textContent = 
-                `🥋 Kalan Sumo: ${remaining}`;
+        function updateRemaining() {
+            const count = sumos.filter(s => s.active).length;
+            document.getElementById('remaining').textContent = count;
         }
 
-        function checkWinner() {
-            const activeSumos = sumos.filter(s => s.active);
-            
-            if (activeSumos.length === 1) {
-                cancelAnimationFrame(animationId);
-                setTimeout(() => {
-                    showResult(activeSumos[0].name);
-                }, 1000);
-            }
-        }
-
-        function showResult(winner) {
-            document.getElementById('winnerText').textContent = winner;
-            document.getElementById('resultPanel').style.display = 'flex';
-        }
-
-        function resetBattle() {
-            document.getElementById('resultPanel').style.display = 'none';
-            document.getElementById('arenaContainer').style.display = 'none';
-            document.getElementById('setupPanel').style.display = 'block';
+        function resetGame() {
+            gameActive = false;
             cancelAnimationFrame(animationId);
+            clearInterval(countdownInterval);
+            
+            document.getElementById('setupScreen').style.display = 'block';
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('winnerModal').classList.remove('show');
+            
+            sumos = [];
         }
 
-        // Initialize with example options
-        ['Pizza', 'Burger', 'Kebap', 'Makarna'].forEach(opt => {
-            options.push(opt);
+        // Enter key support
+        document.getElementById('playerInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addPlayer();
         });
-        updateOptionsList();
-        updateStartButton();
+
+        // Initial render
+        renderPlayers();
     </script>
 </body>
 </html>
