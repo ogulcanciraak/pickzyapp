@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumo Güreşi - Karar Ver!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: white;
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .setup-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #43e97b;
+        }
+
+        .add-btn, .start-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-btn {
+            background: #43e97b;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #38d66f;
+            transform: scale(1.05);
+        }
+
+        .options-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .option-tag {
+            background: #e8fff3;
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #43e97b;
+        }
+
+        .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .start-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+            color: white;
+            font-size: 20px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(67, 233, 123, 0.3);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Arena */
+        .arena-container {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .arena-title {
+            text-align: center;
+            color: #2d3436;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        #arenaCanvas {
+            display: block;
+            margin: 0 auto;
+            background: #f5f5f5;
+            border-radius: 15px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .remaining-count {
+            text-align: center;
+            font-size: 1.5em;
+            margin-top: 20px;
+            color: #2d3436;
+            font-weight: bold;
+        }
+
+        .result-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .result-content {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: popIn 0.5s;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5) rotate(-10deg);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        .winner-emoji {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: bounce 0.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .winner-text {
+            font-size: 2.5em;
+            color: #43e97b;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .retry-btn {
+            background: #43e97b;
+            color: white;
+        }
+
+        .retry-btn:hover {
+            background: #38d66f;
+            transform: translateY(-2px);
+        }
+
+        .home-btn {
+            background: #636e72;
+            color: white;
+        }
+
+        .home-btn:hover {
+            background: #535c60;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            #arenaCanvas {
+                width: 100% !important;
+                height: auto !important;
+            }
+
+            .result-content {
+                padding: 30px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="location.href='index.html'">← Ana Sayfa</button>
+
+    <div class="container">
+        <div class="header">
+            <h1>🥋 Sumo Güreşi</h1>
+            <p>Son kalan kazansın!</p>
+        </div>
+
+        <div class="setup-panel" id="setupPanel">
+            <div class="input-group">
+                <div class="input-row">
+                    <input type="text" id="optionInput" placeholder="Seçenek ekle (örn: Pizza, Burger...)">
+                    <button class="add-btn" onclick="addOption()">+ Ekle</button>
+                </div>
+            </div>
+
+            <div class="options-list" id="optionsList"></div>
+
+            <button class="start-btn" id="startBtn" onclick="startBattle()" disabled>
+                ⚔️ Dövüşü Başlat!
+            </button>
+        </div>
+
+        <div class="arena-container" id="arenaContainer">
+            <h2 class="arena-title">🥋 Arena</h2>
+            <canvas id="arenaCanvas"></canvas>
+            <div class="remaining-count" id="remainingCount"></div>
+        </div>
+    </div>
+
+    <div class="result-panel" id="resultPanel">
+        <div class="result-content">
+            <div class="winner-emoji">🏆</div>
+            <h2 style="color: #43e97b; margin-bottom: 20px;">Kazanan Sumo!</h2>
+            <div class="winner-text" id="winnerText"></div>
+            <div class="action-btns">
+                <button class="action-btn retry-btn" onclick="resetBattle()">🔄 Yeni Dövüş</button>
+                <button class="action-btn home-btn" onclick="location.href='index.html'">🏠 Ana Sayfa</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let options = [];
+        let sumos = [];
+        let canvas, ctx;
+        let animationId;
+
+        // Renk paleti
+        const sumoColors = [
+            { body: '#FF6B6B', belt: '#4ECDC4' },
+            { body: '#FFA07A', belt: '#98D8C8' },
+            { body: '#F7DC6F', belt: '#BB8FCE' },
+            { body: '#85C1E2', belt: '#F8B195' },
+            { body: '#C06C84', belt: '#F67280' },
+            { body: '#6C5CE7', belt: '#FDCB6E' },
+            { body: '#00B894', belt: '#E17055' },
+            { body: '#FD79A8', belt: '#A29BFE' }
+        ];
+
+        document.getElementById('optionInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addOption();
+        });
+
+        function addOption() {
+            const input = document.getElementById('optionInput');
+            const value = input.value.trim();
+
+            if (!value) return;
+
+            if (options.length >= 8) {
+                alert('Maksimum 8 seçenek ekleyebilirsin!');
+                return;
+            }
+
+            options.push(value);
+            input.value = '';
+            updateOptionsList();
+            updateStartButton();
+        }
+
+        function removeOption(index) {
+            options.splice(index, 1);
+            updateOptionsList();
+            updateStartButton();
+        }
+
+        function updateOptionsList() {
+            const list = document.getElementById('optionsList');
+            list.innerHTML = '';
+
+            options.forEach((option, index) => {
+                const tag = document.createElement('div');
+                tag.className = 'option-tag';
+                tag.innerHTML = `
+                    <span>${option}</span>
+                    <button class="remove-btn" onclick="removeOption(${index})">×</button>
+                `;
+                list.appendChild(tag);
+            });
+        }
+
+        function updateStartButton() {
+            document.getElementById('startBtn').disabled = options.length < 2;
+        }
+
+        function startBattle() {
+            document.getElementById('setupPanel').style.display = 'none';
+            document.getElementById('arenaContainer').style.display = 'block';
+            
+            initArena();
+            createSumos();
+            animate();
+        }
+
+        function initArena() {
+            canvas = document.getElementById('arenaCanvas');
+            ctx = canvas.getContext('2d');
+            
+            const baseSize = 500;
+            const size = Math.min(baseSize + (options.length * 30), 700);
+            canvas.width = size;
+            canvas.height = size;
+        }
+
+        function createSumos() {
+            sumos = [];
+            const arenaRadius = (canvas.width / 2) - 60;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            options.forEach((name, index) => {
+                const angle = (index / options.length) * Math.PI * 2;
+                const distance = arenaRadius * 0.6;
+                
+                const sumo = {
+                    name: name,
+                    x: centerX + Math.cos(angle) * distance,
+                    y: centerY + Math.sin(angle) * distance,
+                    radius: 25,
+                    vx: (Math.random() - 0.5) * 3,
+                    vy: (Math.random() - 0.5) * 3,
+                    color: sumoColors[index % sumoColors.length],
+                    active: true,
+                    pushForce: 0
+                };
+                
+                sumos.push(sumo);
+            });
+
+            updateRemainingCount();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw arena
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const arenaRadius = (canvas.width / 2) - 60;
+
+            // Arena border
+            ctx.strokeStyle = '#2d3436';
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, arenaRadius, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Arena inner circle
+            ctx.strokeStyle = '#dfe6e9';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, arenaRadius * 0.5, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Update and draw sumos
+            sumos.forEach(sumo => {
+                if (!sumo.active) return;
+
+                // Merkeze çekim kuvveti (kase etkisi)
+                const dx = centerX - sumo.x;
+                const dy = centerY - sumo.y;
+                const distanceFromCenter = Math.sqrt(dx * dx + dy * dy);
+                const gravityStrength = 0.08;
+                
+                sumo.vx += (dx / distanceFromCenter) * gravityStrength;
+                sumo.vy += (dy / distanceFromCenter) * gravityStrength;
+
+                // Move
+                sumo.x += sumo.vx;
+                sumo.y += sumo.vy;
+
+                // Check arena boundary
+                const newDx = sumo.x - centerX;
+                const newDy = sumo.y - centerY;
+                const distance = Math.sqrt(newDx * newDx + newDy * newDy);
+
+                // Arena kenarında momentum bonusu
+                if (distance > arenaRadius * 0.75) {
+                    const pushMultiplier = 1.15;
+                    sumo.vx *= pushMultiplier;
+                    sumo.vy *= pushMultiplier;
+                }
+
+                if (distance + sumo.radius > arenaRadius) {
+                    sumo.active = false;
+                    updateRemainingCount();
+                    checkWinner();
+                    return;
+                }
+
+                // Friction (azaltıldı)
+                sumo.vx *= 0.985;
+                sumo.vy *= 0.985;
+
+                // Minimum hız garantisi
+                const speed = Math.sqrt(sumo.vx * sumo.vx + sumo.vy * sumo.vy);
+                if (speed < 0.3) {
+                    const angle = Math.random() * Math.PI * 2;
+                    sumo.vx += Math.cos(angle) * 0.5;
+                    sumo.vy += Math.sin(angle) * 0.5;
+                }
+
+                // Push force decay
+                if (sumo.pushForce > 0) {
+                    sumo.pushForce -= 0.5;
+                }
+
+                // Draw sumo
+                drawSumo(sumo);
+            });
+
+            // Check collisions
+            checkCollisions();
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function drawSumo(sumo) {
+            // Body
+            ctx.fillStyle = sumo.color.body;
+            ctx.beginPath();
+            ctx.arc(sumo.x, sumo.y, sumo.radius, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Belt
+            ctx.strokeStyle = sumo.color.belt;
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.arc(sumo.x, sumo.y, sumo.radius * 0.7, 0, Math.PI * 2);
+            ctx.stroke();
+
+            // Face
+            ctx.fillStyle = '#2d3436';
+            ctx.beginPath();
+            ctx.arc(sumo.x - 8, sumo.y - 5, 3, 0, Math.PI * 2);
+            ctx.arc(sumo.x + 8, sumo.y - 5, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Name
+            ctx.fillStyle = '#2d3436';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(sumo.name, sumo.x, sumo.y + sumo.radius + 20);
+        }
+
+        function checkCollisions() {
+            for (let i = 0; i < sumos.length; i++) {
+                if (!sumos[i].active) continue;
+                
+                for (let j = i + 1; j < sumos.length; j++) {
+                    if (!sumos[j].active) continue;
+                    
+                    const dx = sumos[j].x - sumos[i].x;
+                    const dy = sumos[j].y - sumos[i].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    const minDist = sumos[i].radius + sumos[j].radius;
+
+                    if (distance < minDist) {
+                        // Collision detected - AGRESİF MOD
+                        const angle = Math.atan2(dy, dx);
+                        const force = 7; // 2'den 7'ye çıkarıldı
+
+                        // Push apart with high force
+                        sumos[i].vx -= Math.cos(angle) * force;
+                        sumos[i].vy -= Math.sin(angle) * force;
+                        sumos[j].vx += Math.cos(angle) * force;
+                        sumos[j].vy += Math.sin(angle) * force;
+
+                        sumos[i].pushForce = 5;
+                        sumos[j].pushForce = 5;
+                    }
+                }
+            }
+        }
+
+        function updateRemainingCount() {
+            const remaining = sumos.filter(s => s.active).length;
+            document.getElementById('remainingCount').textContent = 
+                `🥋 Kalan Sumo: ${remaining}`;
+        }
+
+        function checkWinner() {
+            const activeSumos = sumos.filter(s => s.active);
+            
+            if (activeSumos.length === 1) {
+                cancelAnimationFrame(animationId);
+                setTimeout(() => {
+                    showResult(activeSumos[0].name);
+                }, 1000);
+            }
+        }
+
+        function showResult(winner) {
+            document.getElementById('winnerText').textContent = winner;
+            document.getElementById('resultPanel').style.display = 'flex';
+        }
+
+        function resetBattle() {
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('arenaContainer').style.display = 'none';
+            document.getElementById('setupPanel').style.display = 'block';
+            cancelAnimationFrame(animationId);
+        }
+
+        // Initialize with example options
+        ['Pizza', 'Burger', 'Kebap', 'Makarna'].forEach(opt => {
+            options.push(opt);
+        });
+        updateOptionsList();
+        updateStartButton();
+    </script>
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ördek Yarışı - Karar Ver!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .back-btn {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: white;
+            transform: translateX(-5px);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .setup-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .add-btn, .start-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .add-btn {
+            background: #4facfe;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #3a8fd4;
+            transform: scale(1.05);
+        }
+
+        .options-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .option-tag {
+            background: #f0f9ff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #4facfe;
+        }
+
+        .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .start-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-size: 20px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 172, 254, 0.3);
+        }
+
+        .start-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Race Track */
+        .race-container {
+            display: none;
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .race-title {
+            text-align: center;
+            color: #2d3436;
+            font-size: 2em;
+            margin-bottom: 30px;
+        }
+
+        .track {
+            background: linear-gradient(to bottom, 
+                #87CEEB 0%, 
+                #87CEEB 50%, 
+                #90EE90 50%, 
+                #90EE90 100%
+            );
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .lane {
+            position: relative;
+            height: 80px;
+            margin-bottom: 10px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .lane:nth-child(odd) {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .lane-number {
+            position: absolute;
+            left: 10px;
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #4facfe;
+            z-index: 10;
+        }
+
+        .duck {
+            position: absolute;
+            left: 60px;
+            font-size: 50px;
+            transition: left 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            transform: rotate(-10deg);
+        }
+
+        .duck.racing {
+            left: calc(100% - 80px) !important;
+        }
+
+        .finish-line {
+            position: absolute;
+            right: 20px;
+            top: 0;
+            bottom: 0;
+            width: 20px;
+            background: repeating-linear-gradient(
+                45deg,
+                #000,
+                #000 10px,
+                #fff 10px,
+                #fff 20px
+            );
+        }
+
+        .result-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .result-content {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            animation: popIn 0.5s;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .winner-emoji {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: bounce 0.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .winner-text {
+            font-size: 2.5em;
+            color: #4facfe;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .retry-btn {
+            background: #4facfe;
+            color: white;
+        }
+
+        .retry-btn:hover {
+            background: #3a8fd4;
+            transform: translateY(-2px);
+        }
+
+        .home-btn {
+            background: #636e72;
+            color: white;
+        }
+
+        .home-btn:hover {
+            background: #535c60;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .duck {
+                font-size: 35px;
+            }
+
+            .lane {
+                height: 60px;
+            }
+
+            .result-content {
+                padding: 30px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="back-btn" onclick="location.href='index.html'">← Ana Sayfa</button>
+
+    <div class="container">
+        <div class="header">
+            <h1>🦆 Ördek Yarışı</h1>
+            <p>Seçeneklerini gir ve ördekleri yarıştır!</p>
+        </div>
+
+        <div class="setup-panel" id="setupPanel">
+            <div class="input-group">
+                <div class="input-row">
+                    <input type="text" id="optionInput" placeholder="Seçenek ekle (örn: Pizza, Burger...)">
+                    <button class="add-btn" onclick="addOption()">+ Ekle</button>
+                </div>
+            </div>
+
+            <div class="options-list" id="optionsList"></div>
+
+            <button class="start-btn" id="startBtn" onclick="startRace()" disabled>
+                🏁 Yarışı Başlat!
+            </button>
+        </div>
+
+        <div class="race-container" id="raceContainer">
+            <h2 class="race-title">🏁 Yarış Başladı!</h2>
+            <div class="track" id="track">
+                <div class="finish-line"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="result-panel" id="resultPanel">
+        <div class="result-content">
+            <div class="winner-emoji">🏆</div>
+            <h2 style="color: #4facfe; margin-bottom: 20px;">Kazanan!</h2>
+            <div class="winner-text" id="winnerText"></div>
+            <div class="action-btns">
+                <button class="action-btn retry-btn" onclick="resetRace()">🔄 Tekrar Yarış</button>
+                <button class="action-btn home-btn" onclick="location.href='index.html'">🏠 Ana Sayfa</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let options = [];
+        const duckColors = ['🦆', '🦆', '🦆', '🦆', '🦆', '🦆'];
+
+        document.getElementById('optionInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addOption();
+        });
+
+        function addOption() {
+            const input = document.getElementById('optionInput');
+            const value = input.value.trim();
+
+            if (!value) return;
+
+            if (options.length >= 6) {
+                alert('Maksimum 6 seçenek ekleyebilirsin!');
+                return;
+            }
+
+            options.push(value);
+            input.value = '';
+            updateOptionsList();
+            updateStartButton();
+        }
+
+        function removeOption(index) {
+            options.splice(index, 1);
+            updateOptionsList();
+            updateStartButton();
+        }
+
+        function updateOptionsList() {
+            const list = document.getElementById('optionsList');
+            list.innerHTML = '';
+
+            options.forEach((option, index) => {
+                const tag = document.createElement('div');
+                tag.className = 'option-tag';
+                tag.innerHTML = `
+                    <span>${option}</span>
+                    <button class="remove-btn" onclick="removeOption(${index})">×</button>
+                `;
+                list.appendChild(tag);
+            });
+        }
+
+        function updateStartButton() {
+            document.getElementById('startBtn').disabled = options.length < 2;
+        }
+
+        function startRace() {
+            document.getElementById('setupPanel').style.display = 'none';
+            document.getElementById('raceContainer').style.display = 'block';
+
+            const track = document.getElementById('track');
+            track.innerHTML = '<div class="finish-line"></div>';
+
+            // Create lanes
+            options.forEach((option, index) => {
+                const lane = document.createElement('div');
+                lane.className = 'lane';
+                lane.innerHTML = `
+                    <div class="lane-number">${index + 1}</div>
+                    <div class="duck" id="duck${index}">${duckColors[index]}</div>
+                    <div style="position: absolute; left: 60px; top: 50%; transform: translateY(-50%); color: rgba(0,0,0,0.5); font-weight: bold;">${option}</div>
+                `;
+                track.appendChild(lane);
+            });
+
+            // Start race after short delay
+            setTimeout(() => {
+                const winner = Math.floor(Math.random() * options.length);
+                
+                options.forEach((option, index) => {
+                    const duck = document.getElementById(`duck${index}`);
+                    const randomDelay = index === winner ? 0 : Math.random() * 500 + 300;
+                    
+                    setTimeout(() => {
+                        duck.classList.add('racing');
+                    }, randomDelay);
+                });
+
+                // Show result after race
+                setTimeout(() => {
+                    showResult(options[winner]);
+                }, 3500);
+            }, 500);
+        }
+
+        function showResult(winner) {
+            document.getElementById('winnerText').textContent = winner;
+            document.getElementById('resultPanel').style.display = 'flex';
+        }
+
+        function resetRace() {
+            document.getElementById('resultPanel').style.display = 'none';
+            document.getElementById('raceContainer').style.display = 'none';
+            document.getElementById('setupPanel').style.display = 'block';
+        }
+
+        // Initialize with example options
+        ['Pizza', 'Burger', 'Kebap'].forEach(opt => {
+            options.push(opt);
+        });
+        updateOptionsList();
+        updateStartButton();
+    </script>
+</body>
+</html>
