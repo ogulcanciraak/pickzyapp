@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karar Verici - Kararsız mısın? Biz Seçelim!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        .option-input {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .add-btn, .decide-btn, .reset-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .add-btn {
+            background: #667eea;
+            color: white;
+        }
+
+        .add-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .options-list {
+            margin-top: 20px;
+        }
+
+        .option-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .remove-btn:hover {
+            background: #ee5a6f;
+        }
+
+        .decide-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 18px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .decide-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .decide-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .wheel-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .wheel {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            position: relative;
+            animation: spin 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(1800deg); }
+        }
+
+        .wheel-slice {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(50% 50%, 50% 0%, 100% 50%);
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            z-index: 10;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ff4757;
+            z-index: 5;
+        }
+
+        .result-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .result-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            animation: popIn 0.5s;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .result-emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .result-title {
+            color: #667eea;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        .result-winner {
+            font-size: 36px;
+            font-weight: bold;
+            color: #2d3436;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .reset-btn {
+            background: #667eea;
+            color: white;
+            width: 100%;
+        }
+
+        .reset-btn:hover {
+            background: #5568d3;
+        }
+
+        .error-message {
+            color: #ff4757;
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .wheel {
+                width: 250px;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Karar Verici</h1>
+        <p class="subtitle">Kararsız mısın? Biz seçelim!</p>
+
+        <div class="input-section">
+            <div class="option-input">
+                <input type="text" id="optionInput" placeholder="Seçenek ekle (örn: Pizza, Burger...)" />
+                <button class="add-btn" onclick="addOption()">Ekle</button>
+            </div>
+            <p class="error-message" id="errorMessage">En az 2 seçenek eklemen gerekiyor!</p>
+        </div>
+
+        <div class="options-list" id="optionsList"></div>
+
+        <button class="decide-btn" id="decideBtn" onclick="spinWheel()" disabled>
+            🎡 Karar Ver!
+        </button>
+    </div>
+
+    <div class="wheel-container" id="wheelContainer">
+        <div style="position: relative;">
+            <div class="pointer"></div>
+            <div class="wheel" id="wheel"></div>
+        </div>
+    </div>
+
+    <div class="result-modal" id="resultModal">
+        <div class="result-content">
+            <div class="result-emoji">🎉</div>
+            <h2 class="result-title">Karar!</h2>
+            <div class="result-winner" id="resultWinner"></div>
+            <button class="reset-btn" onclick="closeResult()">Tekrar Dene</button>
+        </div>
+    </div>
+
+    <script>
+        let options = [];
+
+        // Enter tuşuyla ekleme
+        document.getElementById('optionInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addOption();
+            }
+        });
+
+        function addOption() {
+            const input = document.getElementById('optionInput');
+            const value = input.value.trim();
+
+            if (value === '') return;
+
+            if (options.length >= 10) {
+                showError('Maksimum 10 seçenek ekleyebilirsin!');
+                return;
+            }
+
+            options.push(value);
+            input.value = '';
+            updateOptionsList();
+            updateDecideButton();
+            hideError();
+        }
+
+        function removeOption(index) {
+            options.splice(index, 1);
+            updateOptionsList();
+            updateDecideButton();
+        }
+
+        function updateOptionsList() {
+            const list = document.getElementById('optionsList');
+            list.innerHTML = '';
+
+            options.forEach((option, index) => {
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                item.innerHTML = `
+                    <span>${option}</span>
+                    <button class="remove-btn" onclick="removeOption(${index})">Sil</button>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function updateDecideButton() {
+            const btn = document.getElementById('decideBtn');
+            btn.disabled = options.length < 2;
+        }
+
+        function showError(message) {
+            const error = document.getElementById('errorMessage');
+            error.textContent = message;
+            error.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function spinWheel() {
+            if (options.length < 2) {
+                showError('En az 2 seçenek eklemen gerekiyor!');
+                return;
+            }
+
+            // Çarkı göster
+            const container = document.getElementById('wheelContainer');
+            container.style.display = 'flex';
+
+            // Çarkı oluştur
+            createWheel();
+
+            // Animasyon bitince sonucu göster
+            setTimeout(() => {
+                showResult();
+            }, 3000);
+        }
+
+        function createWheel() {
+            const wheel = document.getElementById('wheel');
+            wheel.innerHTML = '<div class="wheel-center">🎯</div>';
+
+            const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B195', '#C06C84'];
+            const sliceAngle = 360 / options.length;
+
+            options.forEach((option, index) => {
+                const slice = document.createElement('div');
+                slice.className = 'wheel-slice';
+                slice.style.background = colors[index % colors.length];
+                slice.style.transform = `rotate(${index * sliceAngle}deg)`;
+                wheel.appendChild(slice);
+            });
+        }
+
+        function showResult() {
+            // Çarkı gizle
+            document.getElementById('wheelContainer').style.display = 'none';
+
+            // Rastgele kazanan seç
+            const winner = options[Math.floor(Math.random() * options.length)];
+
+            // Sonucu göster
+            document.getElementById('resultWinner').textContent = winner;
+            document.getElementById('resultModal').style.display = 'flex';
+        }
+
+        function closeResult() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        // Örnek seçenekler ekle (ilk açılışta)
+        if (options.length === 0) {
+            ['Pizza', 'Burger', 'Kebap'].forEach(option => {
+                options.push(option);
+            });
+            updateOptionsList();
+            updateDecideButton();
+        }
+    </script>
+</body>
+</html>
