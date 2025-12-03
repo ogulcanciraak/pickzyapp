@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karar Ver! - Yazı Tura</title>
+    <meta name="description" content="Modern, 3D animasyonlu ve Türkçe arayüze sahip eğlenceli yazı-tura oyunu.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- React & ReactDOM (UMD) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel Standalone (to compile JSX in browser) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        /* 3D Transform Utilities */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        .preserve-3d {
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+        }
+        .backface-hidden {
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        /* Coin Toss Animation (Up and Down) */
+        @keyframes toss-up-down {
+            0% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                /* Para en tepeye çıktığında yukarı gider ve uzaklaştığı için biraz küçülür */
+                transform: translateY(-400px) scale(0.6); 
+                animation-timing-function: ease-in; /* Aşağı düşüş hızlanır */
+            }
+            100% {
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Shadow Animation (Matches the toss) */
+        @keyframes shadow-scale {
+            0% {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.4;
+            }
+            50% {
+                /* Para yükselince gölge küçülür ve silikleşir */
+                transform: translateX(-50%) scale(0.2);
+                opacity: 0.1;
+                animation-timing-function: ease-in;
+            }
+            100% {
+                transform: translateX(-50%) scale(1);
+                opacity: 0.4;
+            }
+        }
+
+        .animate-toss {
+            animation: toss-up-down 3s ease-out forwards;
+        }
+
+        .animate-shadow {
+            animation: shadow-scale 3s ease-out forwards;
+        }
+        
+        /* Custom Scrollbar for History */
+        .history-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .history-scroll::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 4px;
+        }
+        .history-scroll::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 4px;
+        }
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- Main Application Script -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- Constants & Types ---
+        const CoinSide = {
+            HEADS: 'TURA',
+            TAILS: 'YAZI'
+        };
+
+        // --- Component: Coin ---
+        const Coin = ({ rotation, isFlipping }) => {
+            return (
+                // Margin top artırıldı (my-32) çünkü para yukarı fırladığında header'a çarpmamalı
+                <div className="relative w-64 h-64 mx-auto perspective-1000 my-32">
+                
+                {/* TOSS LAYER: Bu katman parayı yukarı aşağı hareket ettirir (Translate Y) */}
+                <div className={`w-full h-full ${isFlipping ? 'animate-toss' : ''}`}>
+                    
+                    {/* SPIN LAYER: Bu katman parayı kendi ekseni etrafında döndürür (Rotate Y) */}
+                    <div
+                    className="w-full h-full relative preserve-3d duration-[3000ms] ease-out-cubic transition-transform"
+                    style={{ transform: `rotateY(${rotation}deg)` }}
+                    >
+                    {/* TURA (Heads) Side - Gold with Emperor Symbol */}
+                    {/* Z-Index fix: translateZ(1px) prevents z-fighting with the other side */}
+                    <div 
+                        className="absolute w-full h-full backface-hidden rounded-full shadow-2xl"
+                        style={{ transform: 'translateZ(1px)' }}
+                    >
+                        {/* Outer Ring (Gold) */}
+                        <div className="w-full h-full rounded-full bg-gradient-to-br from-yellow-400 via-yellow-600 to-yellow-800 p-2 flex items-center justify-center border-4 border-yellow-500">
+                        {/* Inner Circle (Lighter Gold) */}
+                        <div className="w-[90%] h-[90%] rounded-full bg-gradient-to-br from-yellow-100 to-yellow-300 shadow-inner flex flex-col items-center justify-center border border-yellow-400 relative overflow-hidden gap-1">
+                            
+                            {/* Decorative Background Pattern */}
+                            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-yellow-600 to-transparent"></div>
+                            
+                            {/* Icon: Emperor's Laurel Wreath / Medal */}
+                            <svg viewBox="0 0 24 24" fill="currentColor" className="w-24 h-24 text-yellow-800 drop-shadow-sm z-10">
+                                <path d="M9.68 13.69L12 11.93l2.31 1.76-.88-2.85L15.75 9h-2.84L12 6.19 11.09 9H8.25l2.31 1.84-.88 2.85zM20 10c0-4.42-3.58-8-8-8s-8 3.58-8 8c0 2.03.76 3.87 2 5.28V23l6-2 6 2v-7.72c1.24-1.41 2-3.25 2-5.28zm-8-6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6z"/>
+                            </svg>
+
+                            {/* TEXT */}
+                            <span className="text-2xl font-black tracking-widest text-yellow-900 drop-shadow-sm font-serif mt-1">
+                                TURA
+                            </span>
+                        </div>
+                        </div>
+                    </div>
+
+                    {/* YAZI (Tails) Side - Silver with Crown */}
+                    {/* Z-Index fix: rotateY(180deg) translateZ(1px) puts it on the back with thickness */}
+                    <div 
+                        className="absolute w-full h-full backface-hidden rounded-full shadow-2xl"
+                        style={{ transform: 'rotateY(180deg) translateZ(1px)' }}
+                    >
+                        {/* Outer Ring (Silver) */}
+                        <div className="w-full h-full rounded-full bg-gradient-to-br from-gray-300 via-gray-400 to-gray-500 p-2 flex items-center justify-center border-4 border-gray-400">
+                        {/* Inner Circle (White/Silver) */}
+                        <div className="w-[90%] h-[90%] rounded-full bg-gradient-to-br from-white to-gray-200 shadow-inner flex flex-col items-center justify-center border border-gray-300 relative overflow-hidden gap-1">
+                            
+                            {/* Decorative Circle */}
+                            <div className="absolute inset-0 border-[8px] border-gray-100/60 rounded-full"></div>
+
+                            {/* Icon: Crown */}
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-24 h-24 text-gray-500 drop-shadow-md z-10">
+                                <path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z" />
+                            </svg>
+
+                            {/* TEXT */}
+                            <span className="text-2xl font-black tracking-widest text-gray-600 drop-shadow-sm font-serif mt-1">
+                                YAZI
+                            </span>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                
+                {/* Shadow Effect underneath */}
+                <div 
+                    className={`absolute -bottom-12 left-1/2 w-48 h-4 bg-black rounded-[100%] blur-md transition-all ${isFlipping ? 'animate-shadow' : 'opacity-40'}`}
+                    style={{ transform: 'translateX(-50%)' }}
+                ></div>
+                </div>
+            );
+        };
+
+        // --- Component: History ---
+        const History = ({ history, onClear }) => {
+            if (history.length === 0) return null;
+
+            return (
+                <div className="mt-8 bg-white/90 backdrop-blur-sm rounded-xl p-6 shadow-lg max-w-md w-full mx-auto">
+                <div className="flex justify-between items-center mb-4 border-b pb-2 border-gray-200">
+                    <h3 className="font-bold text-gray-700">Son Atışlar</h3>
+                    <button 
+                    onClick={onClear}
+                    className="text-xs text-red-500 hover:text-red-700 font-semibold px-2 py-1 hover:bg-red-50 rounded transition-colors"
+                    >
+                    Temizle
+                    </button>
+                </div>
+                <div className="flex flex-wrap gap-2 justify-center max-h-40 overflow-y-auto history-scroll p-1">
+                    {history.slice().reverse().map((result) => (
+                    <span 
+                        key={result.id}
+                        className={`px-3 py-1 rounded-full text-sm font-bold shadow-sm border transition-transform hover:scale-105 ${
+                        result.side === CoinSide.HEADS 
+                            ? 'bg-yellow-100 text-yellow-800 border-yellow-200' 
+                            : 'bg-gray-100 text-gray-700 border-gray-200'
+                        }`}
+                    >
+                        {result.side}
+                    </span>
+                    ))}
+                </div>
+                </div>
+            );
+        };
+
+        // --- Main Component: App ---
+        const App = () => {
+            const [isFlipping, setIsFlipping] = useState(false);
+            const [coinRotation, setCoinRotation] = useState(0);
+            const [result, setResult] = useState(null);
+            const [history, setHistory] = useState([]);
+            const [flipCount, setFlipCount] = useState(0);
+            
+            const handleFlip = () => {
+                if (isFlipping) return;
+
+                setIsFlipping(true);
+                setResult(null); 
+
+                // Determine Result
+                const randomVal = Math.random();
+                const newSide = randomVal > 0.5 ? CoinSide.TAILS : CoinSide.HEADS;
+                
+                // Calculate Rotation
+                const spins = 5;
+                const degreesPerSpin = 360;
+                const baseRotation = coinRotation - (coinRotation % 360);
+                
+                let targetRotation = baseRotation + (spins * degreesPerSpin);
+                
+                if (newSide === CoinSide.TAILS) {
+                    targetRotation += 180;
+                } else {
+                    targetRotation += 360; 
+                }
+
+                setCoinRotation(targetRotation);
+
+                // Wait for animation (3000ms)
+                setTimeout(() => {
+                    setIsFlipping(false);
+                    setResult(newSide);
+                    
+                    const newResult = {
+                        id: Date.now(),
+                        side: newSide,
+                        timestamp: new Date()
+                    };
+                    
+                    setHistory(prev => [...prev, newResult]);
+                    setFlipCount(prev => prev + 1);
+                }, 3000);
+            };
+
+            const resetGame = () => {
+                setHistory([]);
+                setResult(null);
+                setFlipCount(0);
+                setCoinRotation(0);
+            };
+
+            const headsCount = history.filter(h => h.side === CoinSide.HEADS).length;
+            const tailsCount = history.filter(h => h.side === CoinSide.TAILS).length;
+
+            return (
+                <div className="min-h-screen text-white overflow-hidden flex flex-col items-center">
+                
+                {/* Header */}
+                <header className="w-full p-6 flex justify-between items-center bg-white/10 backdrop-blur-md shadow-lg border-b border-white/20 z-50 relative">
+                    <div className="flex items-center gap-3">
+                    <span className="text-3xl">🎯</span>
+                    <h1 className="text-2xl font-bold tracking-tight">Karar Ver!</h1>
+                    </div>
+                    <div className="bg-white/20 px-4 py-1 rounded-full text-sm font-medium">
+                    Toplam Atış: {flipCount}
+                    </div>
+                </header>
+
+                {/* Main Content */}
+                <main className="flex-1 w-full max-w-4xl px-4 flex flex-col items-center justify-center py-8">
+                    
+                    <div className="text-center mb-4 z-10 relative">
+                    <h2 className="text-4xl md:text-5xl font-extrabold mb-2 drop-shadow-md h-16 flex items-center justify-center">
+                        {isFlipping ? 'Dönüyor...' : result ? result : 'Yazı mı? Tura mı?'}
+                    </h2>
+                    <p className="text-white/80 text-lg">Parayı fırlat ve şansına güven!</p>
+                    </div>
+
+                    {/* 3D Coin Component */}
+                    <Coin rotation={coinRotation} isFlipping={isFlipping} />
+
+                    {/* Controls */}
+                    <div className="flex flex-col gap-4 items-center w-full max-w-xs mt-8 z-10 relative">
+                    <button
+                        onClick={handleFlip}
+                        disabled={isFlipping}
+                        className={`w-full py-4 rounded-full text-xl font-bold shadow-xl transition-all transform hover:-translate-y-1 active:scale-95 flex items-center justify-center gap-2 ${
+                        isFlipping 
+                            ? 'bg-gray-400 cursor-not-allowed opacity-70' 
+                            : 'bg-white text-[#764ba2] hover:bg-gray-50'
+                        }`}
+                    >
+                        {isFlipping ? (
+                        <>
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-[#764ba2]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Fırlatılıyor...
+                        </>
+                        ) : (
+                        <>
+                            <span>🪙</span> PARAYI FIRLAT
+                        </>
+                        )}
+                    </button>
+                    </div>
+
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 gap-4 w-full max-w-md mt-10 z-10 relative">
+                    <div className="bg-yellow-500/20 backdrop-blur-md rounded-xl p-4 border border-yellow-400/30 text-center">
+                        <div className="text-xs uppercase tracking-wider text-yellow-100 mb-1">Tura Sayısı</div>
+                        <div className="text-3xl font-bold text-yellow-50">{headsCount}</div>
+                        <div className="text-xs text-yellow-200 mt-1">
+                        {flipCount > 0 ? ((headsCount / flipCount) * 100).toFixed(0) : 0}%
+                        </div>
+                    </div>
+                    <div className="bg-gray-400/20 backdrop-blur-md rounded-xl p-4 border border-gray-400/30 text-center">
+                        <div className="text-xs uppercase tracking-wider text-gray-100 mb-1">Yazı Sayısı</div>
+                        <div className="text-3xl font-bold text-gray-50">{tailsCount}</div>
+                        <div className="text-xs text-gray-200 mt-1">
+                        {flipCount > 0 ? ((tailsCount / flipCount) * 100).toFixed(0) : 0}%
+                        </div>
+                    </div>
+                    </div>
+
+                    {/* History Component */}
+                    <History history={history} onClear={resetGame} />
+
+                </main>
+
+                <footer className="w-full p-4 text-center text-white/50 text-sm z-10 relative">
+                    © 2024 Karar Ver! | 3D Yazı Tura
+                </footer>
+                </div>
+            );
+        };
+
+        // --- Render ---
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
