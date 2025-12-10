@@ -704,15 +704,15 @@
             for (let section of shuffled) {
                 switch(section) {
                     case 'serpentine':
-                        // Serpentine barriers (Type 1)
+                        // Serpentine barriers - SHORT barriers, never block full track
                         const serpentineCount = 4 + Math.floor(Math.random() * 3);
                         for (let i = 0; i < serpentineCount; i++) {
                             const side = Math.random() > 0.5;
                             obstacles.push({
                                 type: 'rect',
-                                x: side ? 50 + Math.random() * 100 : 350 + Math.random() * 100,
+                                x: side ? 50 + Math.random() * 50 : 400 + Math.random() * 50,
                                 y: currentY,
-                                width: 150 + Math.random() * 100,
+                                width: 120, // SHORT - leaves plenty of space
                                 height: 20,
                                 color: '#e74c3c'
                             });
@@ -721,29 +721,29 @@
                         break;
 
                     case 'bumps':
-                        // Circular bumps (Type 2)
-                        const bumpCount = 6 + Math.floor(Math.random() * 6);
+                        // Circular bumps - scattered, never block passage
+                        const bumpCount = 8 + Math.floor(Math.random() * 6);
                         for (let i = 0; i < bumpCount; i++) {
                             obstacles.push({
                                 type: 'circle',
                                 x: 80 + (i % 4) * 120 + Math.random() * 40,
                                 y: currentY + Math.floor(i / 4) * 100,
-                                radius: 20 + Math.random() * 15,
+                                radius: 18 + Math.random() * 10,
                                 color: '#f39c12'
                             });
                         }
-                        currentY += 250;
+                        currentY += 280;
                         break;
 
                     case 'zigzag':
-                        // Zigzag platforms (Type 3)
+                        // Zigzag - SHORT platforms on alternating sides
                         const zigCount = 5 + Math.floor(Math.random() * 3);
                         for (let i = 0; i < zigCount; i++) {
                             obstacles.push({
                                 type: 'rect',
-                                x: i % 2 === 0 ? 80 : 300,
+                                x: i % 2 === 0 ? 60 : 360,
                                 y: currentY,
-                                width: 200 + Math.random() * 50,
+                                width: 140, // SHORT - leaves 300px+ open space
                                 height: 15,
                                 color: '#9b59b6'
                             });
@@ -752,17 +752,18 @@
                         break;
 
                     case 'platforms':
-                        // Floating platforms (Type 4)
-                        const platformCount = 3 + Math.floor(Math.random() * 3);
+                        // Small scattered platforms - never block full width
+                        const platformCount = 4 + Math.floor(Math.random() * 3);
                         for (let i = 0; i < platformCount; i++) {
+                            // 2-3 small platforms with gaps
                             const numPlatforms = 2 + Math.floor(Math.random() * 2);
                             for (let j = 0; j < numPlatforms; j++) {
                                 obstacles.push({
                                     type: 'rect',
-                                    x: 50 + j * 200 + Math.random() * 50,
+                                    x: 60 + j * 180 + Math.random() * 40,
                                     y: currentY + Math.random() * 30,
-                                    width: 120,
-                                    height: 15,
+                                    width: 90, // SMALL platforms
+                                    height: 12,
                                     color: '#3498db'
                                 });
                             }
@@ -771,22 +772,22 @@
                         break;
 
                     case 'spinners':
-                        // Rotating obstacles (Type 6)
-                        const spinnerCount = 3 + Math.floor(Math.random() * 3);
+                        // Scattered circles - never block passage
+                        const spinnerCount = 4 + Math.floor(Math.random() * 4);
                         for (let i = 0; i < spinnerCount; i++) {
                             obstacles.push({
                                 type: 'circle',
-                                x: 100 + (i % 3) * 180 + Math.random() * 50,
+                                x: 100 + (i % 3) * 170 + Math.random() * 50,
                                 y: currentY + Math.floor(i / 3) * 120,
-                                radius: 25 + Math.random() * 10,
+                                radius: 22 + Math.random() * 8,
                                 color: '#e67e22'
                             });
                         }
-                        currentY += 200;
+                        currentY += 250;
                         break;
                 }
 
-                currentY += 50; // Gap between sections
+                currentY += 80; // Larger gap between sections
             }
 
             // Finish line
