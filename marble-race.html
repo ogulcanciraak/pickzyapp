@@ -3,1151 +3,593 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bilye Parkuru - Karar Ver!</title>
+    <title>Plinko Kaosu - Arcade Edition</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;600;700&family=Righteous&display=swap" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        body { 
+            font-family: 'Fredoka', sans-serif; 
+            background-color: #050b14;
+            background-image: 
+                radial-gradient(circle at 50% 0%, #1e1b4b 0%, transparent 60%),
+                radial-gradient(circle at 80% 80%, #312e81 0%, transparent 40%);
+        }
+        
+        .font-arcade { font-family: 'Righteous', cursive; letter-spacing: 1px; }
+
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
+
+        /* Neon Glow Effects */
+        .neon-border {
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.2), inset 0 0 20px rgba(99, 102, 241, 0.1);
+        }
+        .machine-frame {
+            box-shadow: 
+                0 0 0 4px #1e293b, /* Inner Bezel */
+                0 0 0 8px #312e81, /* Outer Rim */
+                0 20px 50px -10px rgba(79, 70, 229, 0.5); /* Ambient Glow */
         }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
+        /* Animations */
+        @keyframes slideIn {
+            0% { transform: translateX(10px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
         }
-
-        .back-btn {
-            background: rgba(255,255,255,0.9);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        .back-btn:hover {
-            background: white;
-            transform: translateX(-5px);
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 30px;
-        }
-
-        .header h1 {
-            font-size: 3em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .header p {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        /* Setup Panel */
-        .setup-panel {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .panel-title {
-            font-size: 2em;
-            color: #2d3436;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-
-        .input-row {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"] {
-            flex: 1;
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .add-btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            background: #667eea;
-            color: white;
-            transition: all 0.3s;
-        }
-
-        .add-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        .racers-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .racer-item {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8e5ff 100%);
-            padding: 12px 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 2px solid #667eea;
-        }
-
-        .racer-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex: 1;
-        }
-
-        .racer-color {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            border: 2px solid white;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .remove-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s;
-        }
-
-        .remove-btn:hover {
-            background: #ff3838;
-            transform: scale(1.1);
-        }
-
-        .start-btn {
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 15px;
-            font-size: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transition: all 0.3s;
-            margin-top: 20px;
-        }
-
-        .start-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
-        }
-
-        .start-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .info-box {
-            background: #fff3cd;
-            border: 2px solid #ffc107;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 14px;
-            color: #856404;
-        }
-
-        /* Race View */
-        .race-view {
-            display: none;
-            gap: 20px;
-        }
-
-        .race-container {
-            flex: 1;
-            background: white;
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-        }
-
-        .race-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .race-title {
-            font-size: 1.5em;
-            color: #2d3436;
-        }
-
-        .race-controls {
-            display: flex;
-            gap: 10px;
-        }
-
-        .control-btn {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .restart-btn {
-            background: #667eea;
-            color: white;
-        }
-
-        .restart-btn:hover {
-            background: #5568d3;
-        }
-
-        #raceCanvas {
-            width: 100%;
-            border-radius: 15px;
-            background: linear-gradient(180deg, #e3f2fd 0%, #f5f5f5 100%);
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        /* Leaderboard */
-        .leaderboard {
-            width: 300px;
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            height: fit-content;
-            position: sticky;
-            top: 20px;
-        }
-
-        .leaderboard-title {
-            font-size: 1.8em;
-            color: #2d3436;
-            margin-bottom: 20px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .racer-rank {
-            background: linear-gradient(135deg, #f5f3ff 0%, #e8e5ff 100%);
-            border-radius: 12px;
-            padding: 12px 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s;
-            border: 2px solid transparent;
-        }
-
-        .racer-rank.first {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
-            border-color: #ffd700;
-            transform: scale(1.05);
-        }
-
-        .racer-rank.second {
-            background: linear-gradient(135deg, #c0c0c0 0%, #e8e8e8 100%);
-            border-color: #c0c0c0;
-        }
-
-        .racer-rank.third {
-            background: linear-gradient(135deg, #cd7f32 0%, #e9b782 100%);
-            border-color: #cd7f32;
-        }
-
-        .rank-number {
-            font-size: 1.3em;
-            font-weight: bold;
-            color: #2d3436;
-            min-width: 30px;
-        }
-
-        .rank-color {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            border: 3px solid white;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        .rank-name {
-            flex: 1;
-            font-weight: 600;
-            color: #2d3436;
-        }
-
-        .rank-progress {
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        .race-status {
-            text-align: center;
-            padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 10px;
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 1.1em;
-        }
-
-        /* Result Modal */
-        .result-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
-
-        .result-content {
-            background: white;
-            padding: 50px;
-            border-radius: 25px;
-            text-align: center;
-            max-width: 500px;
-            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
+        .animate-slideIn { animation: slideIn 0.3s ease-out forwards; }
+        
         @keyframes popIn {
-            0% {
-                transform: scale(0.3) rotate(-180deg);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1) rotate(0deg);
-                opacity: 1;
-            }
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
         }
+        .animate-popIn { animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
 
-        .winner-emoji {
-            font-size: 120px;
-            margin-bottom: 25px;
-            animation: bounce 0.6s infinite alternate;
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(244, 63, 94, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(244, 63, 94, 0.7); }
         }
-
-        @keyframes bounce {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(-25px); }
-        }
-
-        .result-label {
-            font-size: 1.5em;
-            color: #666;
-            margin-bottom: 15px;
-        }
-
-        .winner-text {
-            font-size: 3em;
-            color: #667eea;
-            font-weight: bold;
-            margin-bottom: 35px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .podium {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .podium-place {
-            text-align: center;
-        }
-
-        .podium-color {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            margin: 0 auto 10px;
-            border: 3px solid white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-        }
-
-        .podium-name {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .podium-medal {
-            font-size: 2em;
-        }
-
-        .action-btns {
-            display: flex;
-            gap: 15px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 16px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .retry-btn {
-            background: #667eea;
-            color: white;
-        }
-
-        .retry-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
-
-        .home-btn {
-            background: #636e72;
-            color: white;
-        }
-
-        .home-btn:hover {
-            background: #535c60;
-            transform: translateY(-2px);
-        }
-
-        /* Responsive */
-        @media (max-width: 1024px) {
-            .race-view {
-                flex-direction: column;
-            }
-
-            .leaderboard {
-                width: 100%;
-                position: static;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 2em;
-            }
-
-            .setup-panel {
-                padding: 25px;
-            }
-
-            .racers-list {
-                grid-template-columns: 1fr;
-            }
-        }
+        .animate-pulse-glow { animation: pulse-glow 2s infinite; }
     </style>
 </head>
-<body>
-    <button class="back-btn" onclick="location.href='index.html'">← Ana Sayfa</button>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden text-slate-200 selection:bg-indigo-500 selection:text-white">
 
-    <div class="container">
-        <div class="header">
-            <h1>🎯 Bilye Parkuru</h1>
-            <p>Yarışmacıları ekle ve bilyeler parkurda yarışsın!</p>
-        </div>
-
-        <!-- Setup Panel -->
-        <div class="setup-panel" id="setupPanel">
-            <h2 class="panel-title">🏁 Yarışmacılar</h2>
-
-            <div class="input-row">
-                <input type="text" id="racerInput" placeholder="Yarışmacı adı... (örn: Ali, Ayşe)" maxlength="20">
-                <button class="add-btn" onclick="addRacer()">+ Ekle</button>
-            </div>
-
-            <div class="racers-list" id="racersList"></div>
-
-            <button class="start-btn" id="startBtn" onclick="startRace()" disabled>
-                🏁 Yarışı Başlat!
-            </button>
-
-            <div class="info-box">
-                💡 <strong>İpucu:</strong> En az 2, en fazla 8 yarışmacı ekleyebilirsiniz. Her yarışta farklı parkur!
-            </div>
-        </div>
-
-        <!-- Race View -->
-        <div class="race-view" id="raceView">
-            <div class="race-container">
-                <div class="race-header">
-                    <h2 class="race-title">🎯 Bilye Parkuru</h2>
-                    <div class="race-controls">
-                        <button class="control-btn restart-btn" onclick="restartRace()">🔄 Yeniden Başlat</button>
-                    </div>
+    <div id="setupView" class="w-full max-w-md bg-slate-900/80 backdrop-blur-xl rounded-[2rem] shadow-2xl overflow-hidden border border-white/10 flex flex-col h-[85vh] transition-all duration-300 relative z-20">
+        <div class="bg-gradient-to-b from-white/5 to-transparent p-6 border-b border-white/5 flex justify-between items-center">
+            <h1 class="text-2xl font-arcade text-white tracking-wide flex items-center gap-3 drop-shadow-md">
+                <div class="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/40">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4"/><path d="M12 16V8"/></svg>
                 </div>
-                <canvas id="raceCanvas"></canvas>
+                PLINKO <span class="text-indigo-400">KAOSU</span>
+            </h1>
+            <button onclick="location.reload()" class="text-xs font-bold text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3 py-1.5 rounded-full border border-white/5 flex items-center gap-1">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                ÇIKIŞ
+            </button>
+        </div>
+
+        <div class="p-6 flex flex-col gap-6">
+            <div class="relative group">
+                <div class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl opacity-30 group-hover:opacity-70 transition duration-300 blur"></div>
+                <div class="relative flex gap-2 bg-slate-900 rounded-xl p-1">
+                    <input type="text" id="racerInput" placeholder="Yarışmacı Adı..." class="flex-1 bg-transparent px-4 py-3 focus:outline-none text-white font-bold placeholder-slate-500" maxlength="12">
+                    <button onclick="addRacer()" class="bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-lg transition-colors shadow-lg active:scale-95">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    </button>
+                </div>
             </div>
 
-            <div class="leaderboard">
-                <h3 class="leaderboard-title">🏆 Sıralama</h3>
-                <div id="leaderboardContent"></div>
-                <div class="race-status" id="raceStatus">Yarış Başlıyor...</div>
+            <div class="bg-white/5 p-1 rounded-xl border border-white/5">
+                <select id="gameMode" class="w-full bg-slate-800 text-white font-bold text-sm focus:outline-none cursor-pointer p-3 rounded-lg border border-slate-700 hover:border-indigo-500 transition-colors">
+                    <option value="first">🥇 ALTIN GOL (İlk Biten Kazanır)</option>
+                    <option value="top3">🥉 İLK 3 (Podyum Belirlensin)</option>
+                    <option value="all">🏁 TAM KAOS (Herkes Beklensin)</option>
+                </select>
             </div>
+        </div>
+
+        <div class="px-6 pb-2 flex justify-between items-center text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <span>Yarışmacı Listesi</span>
+            <span id="countBadge" class="bg-white/5 px-2 py-0.5 rounded text-slate-300">0/30</span>
+        </div>
+
+        <div id="racersList" class="flex-1 overflow-y-auto px-6 pb-4 space-y-2 custom-scrollbar"></div>
+
+        <div class="p-6 bg-gradient-to-t from-slate-900 via-slate-900 to-transparent">
+            <button id="startBtn" onclick="startRace()" disabled class="w-full relative group overflow-hidden bg-indigo-600 text-white py-4 rounded-xl font-arcade text-xl tracking-widest shadow-2xl shadow-indigo-900/50 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none transition-all">
+                <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></span>
+                <span class="relative flex items-center justify-center gap-3">
+                    BAŞLAT <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                </span>
+            </button>
         </div>
     </div>
 
-    <!-- Result Modal -->
-    <div class="result-modal" id="resultModal">
-        <div class="result-content">
-            <div class="winner-emoji">🏆</div>
-            <div class="result-label">Kazanan:</div>
-            <div class="winner-text" id="winnerText"></div>
+    <div id="gameContainer" class="hidden w-full max-w-5xl h-[90vh] gap-6 relative z-10 items-stretch">
+        
+        <div class="flex-1 relative bg-slate-900 rounded-3xl machine-frame overflow-hidden flex flex-col">
+            
+            <div class="h-14 bg-slate-800 border-b border-slate-700 flex justify-between items-center px-6 shrink-0 relative z-20 shadow-md">
+                <div class="flex items-center gap-2">
+                    <div class="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_red]"></div>
+                    <span class="text-xs font-bold text-slate-300 tracking-widest uppercase">CANLI YARIŞ</span>
+                </div>
+                
+                <button onclick="stopRace()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold border border-slate-600 transition-all flex items-center gap-2 group">
+                    <svg class="group-hover:-translate-x-0.5 transition-transform" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></svg>
+                    DÜZENLE
+                </button>
+            </div>
 
-            <div class="podium" id="podium"></div>
+            <div class="flex-1 relative bg-[#0f172a] shadow-inner">
+                <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#6366f1 1px, transparent 1px); background-size: 20px 20px;"></div>
+                <canvas id="raceCanvas" class="block w-full h-full relative z-10 touch-none"></canvas>
+            </div>
+        </div>
 
-            <div class="action-btns">
-                <button class="action-btn retry-btn" onclick="restartRace()">🔄 Tekrar Yarış</button>
-                <button class="action-btn home-btn" onclick="backToSetup()">⚙️ Ayarlar</button>
+        <div class="w-72 hidden md:flex flex-col shrink-0">
+            <div class="bg-slate-800/60 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden flex flex-col h-full shadow-2xl">
+                <div class="p-5 bg-white/5 border-b border-white/5">
+                    <h2 class="text-indigo-400 font-arcade tracking-widest text-lg text-center drop-shadow-sm">
+                        SIRALAMA
+                    </h2>
+                </div>
+                
+                <div id="liveLeaderboard" class="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar transition-all">
+                    </div>
+
+                <div class="p-3 border-t border-white/5 text-center">
+                    <span class="text-[10px] text-slate-500 font-mono">PLINKO SYSTEM v2.5 - LIVE</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="mobileLeaderboard" class="md:hidden hidden fixed bottom-4 left-4 right-4 z-30 bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl p-3 shadow-2xl overflow-x-auto whitespace-nowrap">
+        <div id="mobileLeaderboardContent" class="flex gap-3"></div>
+    </div>
+
+    <div id="resultModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/90 backdrop-blur-md transition-all duration-300 opacity-0 px-4">
+        <div class="bg-slate-800 rounded-3xl p-1 max-w-sm w-full shadow-2xl transform scale-95 transition-all duration-300 neon-border">
+            <div class="bg-slate-900 rounded-[1.4rem] p-8 text-center overflow-hidden relative">
+                <div class="absolute inset-0 bg-[conic-gradient(at_top,_var(--tw-gradient-stops))] from-indigo-900/40 via-slate-900 to-slate-900 animate-spin-slow"></div>
+                
+                <div class="relative z-10">
+                    <div class="inline-block mb-4 p-4 rounded-full bg-yellow-500/10 border border-yellow-500/20 shadow-[0_0_30px_rgba(234,179,8,0.2)] animate-pulse-glow">
+                        <svg class="w-16 h-16 text-yellow-400 drop-shadow-md" viewBox="0 0 24 24" fill="currentColor"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                    </div>
+
+                    <h2 class="text-sm font-bold text-slate-400 mb-1 tracking-widest uppercase">KAZANAN</h2>
+                    <div id="winnerText" class="text-4xl font-arcade text-white mb-8 truncate px-2 drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]"></div>
+
+                    <div class="flex flex-col gap-3">
+                        <button onclick="startRace()" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2 group">
+                            <svg class="group-hover:rotate-180 transition-transform duration-500" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                            TEKRAR OYNA
+                        </button>
+                        <button onclick="stopRace()" class="w-full py-4 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-xl font-bold transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 17l-5-5 5-5"/><path d="M18 17l-5-5 5-5"/></svg>
+                            DÜZENLE
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Colors for marbles
-        const colors = [
-            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
-            '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'
-        ];
+        // --- CONFIG & PHYSICS ---
+        const COLORS = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', '#3b82f6', '#8b5cf6', '#d946ef', '#f43f5e', '#6366f1', '#ec4899'];
+        
+        // FİZİK AYARLARI
+        const GRAVITY = 0.12;      
+        const FRICTION = 0.99;     
+        const BOUNCE = 0.5;        
+        const MARBLE_RADIUS = 7;   // 14px Çap
+        const PEG_RADIUS = 3;      // 6px Çap
+        const WALL_THICKNESS = 20; 
+        
+        let TRACK_WIDTH = 0; 
+        let TRACK_HEIGHT = 0;
 
+        // State
         let racers = [];
         let marbles = [];
         let obstacles = [];
-        let animationId = null;
-        let raceStartTime = 0;
-        let raceFinished = false;
-        let cameraY = 0;
+        let animationId;
+        let isRacing = false;
+        let finishOrder = [];
+        let selectedMode = 'first';
+        let lidOpen = false;
 
-        // Canvas setup
         const canvas = document.getElementById('raceCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Constants - Adjusted for realistic physics
-        const TRACK_WIDTH = 600;
-        const TRACK_LENGTH = 5000; // Longer track for slower gameplay
-        const MARBLE_RADIUS = 12;
-        const GRAVITY = 0.12; // Much slower fall - realistic
-        const FRICTION = 0.975; // High friction for slow motion
-        const BOUNCE = 0.4; // Less bounce for smoother gameplay
-        const MAX_VELOCITY = 7; // Lower speed cap for realistic motion
+        // --- LOCAL STORAGE ---
+        function loadRacers() {
+            const saved = localStorage.getItem('marble_racers');
+            if (saved) {
+                racers = JSON.parse(saved);
+                updateRacerList();
+            } else {
+                ['Mavi', 'Kırmızı', 'Yeşil', 'Sarı'].forEach(name => {
+                    racers.push({ name, color: COLORS[racers.length % COLORS.length] });
+                });
+                updateRacerList();
+            }
+        }
+        function saveRacers() { localStorage.setItem('marble_racers', JSON.stringify(racers)); }
 
-        // Enter key support
-        document.getElementById('racerInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') addRacer();
-        });
+        // --- UI FUNCTIONS ---
+        function updateRacerList() {
+            const list = document.getElementById('racersList');
+            const count = document.getElementById('countBadge');
+            const btn = document.getElementById('startBtn');
+            
+            list.innerHTML = racers.map((r, i) => `
+                <div class="flex items-center bg-white/5 p-3 rounded-xl border border-white/5 hover:bg-white/10 transition-colors group animate-popIn">
+                    <div class="w-8 h-8 rounded-full border-2 border-white/10 shadow-inner flex items-center justify-center text-white text-xs font-bold mr-3 shrink-0" style="background:${r.color}; box-shadow: 0 0 10px ${r.color}40;">${i + 1}</div>
+                    <span class="font-bold text-slate-200 flex-1 truncate">${r.name}</span>
+                    <button onclick="removeRacer(${i})" class="text-slate-500 hover:text-red-400 p-2 transition-colors opacity-0 group-hover:opacity-100">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>
+                    </button>
+                </div>
+            `).join('');
+            
+            count.innerText = `${racers.length}/30`;
+            btn.disabled = racers.length < 2;
+        }
 
         function addRacer() {
             const input = document.getElementById('racerInput');
-            const value = input.value.trim();
-
-            if (!value) {
-                input.focus();
-                return;
-            }
-
-            if (racers.length >= 8) {
-                alert('⚠️ Maksimum 8 yarışmacı ekleyebilirsiniz!');
-                return;
-            }
-
-            if (racers.some(r => r.name === value)) {
-                alert('⚠️ Bu yarışmacı zaten ekli!');
-                input.value = '';
-                input.focus();
-                return;
-            }
-
-            racers.push({
-                name: value,
-                color: colors[racers.length % colors.length]
-            });
-
+            const name = input.value.trim();
+            if (!name) return;
+            if (racers.length >= 30) return alert('Maksimum 30 yarışçı!');
+            racers.push({ name, color: COLORS[racers.length % COLORS.length] });
             input.value = '';
-            input.focus();
-            updateRacersList();
+            saveRacers();
+            updateRacerList();
         }
 
         function removeRacer(index) {
             racers.splice(index, 1);
-            updateRacersList();
+            saveRacers();
+            updateRacerList();
         }
 
-        function updateRacersList() {
-            const list = document.getElementById('racersList');
-            list.innerHTML = '';
+        document.getElementById('racerInput').addEventListener('keypress', e => e.key === 'Enter' && addRacer());
 
-            racers.forEach((racer, index) => {
-                const item = document.createElement('div');
-                item.className = 'racer-item';
-                item.innerHTML = `
-                    <div class="racer-info">
-                        <div class="racer-color" style="background: ${racer.color}"></div>
-                        <span>${racer.name}</span>
-                    </div>
-                    <button class="remove-btn" onclick="removeRacer(${index})">×</button>
-                `;
-                list.appendChild(item);
-            });
-
-            document.getElementById('startBtn').disabled = racers.length < 2;
-        }
-
-        function startRace() {
-            document.getElementById('setupPanel').style.display = 'none';
-            document.getElementById('raceView').style.display = 'flex';
-
-            initCanvas();
-            createObstacles();
-            createMarbles();
-            updateLeaderboard();
-
-            raceStartTime = Date.now();
-            raceFinished = false;
-            cameraY = 0;
-
-            animate();
-        }
-
-        function initCanvas() {
-            canvas.width = TRACK_WIDTH;
-            canvas.height = 600;
-        }
-
-        function createObstacles() {
+        // --- MAP GENERATION (ÇAPRAZ DAĞILIM GÜNCELLEMESİ) ---
+        function generateMap() {
             obstacles = [];
+            
+            const centerX = TRACK_WIDTH / 2;
+            const gateW = 160; 
+            const gateH = 100;
+            const gateTopY = 50;
 
-            // Track boundaries (walls)
-            obstacles.push({
-                type: 'wall',
-                x: 0,
-                y: 0,
-                width: 20,
-                height: TRACK_LENGTH
-            });
-            obstacles.push({
-                type: 'wall',
-                x: TRACK_WIDTH - 20,
-                y: 0,
-                width: 20,
-                height: TRACK_LENGTH
-            });
+            // Hazne Duvarları
+            obstacles.push({ type: 'wall', x: centerX - gateW/2, y: gateTopY, w: 8, h: gateH, color: '#64748b' });
+            obstacles.push({ type: 'wall', x: centerX + gateW/2 - 8, y: gateTopY, w: 8, h: gateH, color: '#64748b' });
 
-            let currentY = 150;
-
-            // Random course generation with 5 different obstacle types (no 180° blocks)
-            const sections = [
-                'serpentine',
-                'bumps',
-                'zigzag',
-                'platforms',
-                'spinners'
-            ];
-
-            // Shuffle and select random sections
-            const shuffled = sections.sort(() => Math.random() - 0.5);
-
-            for (let section of shuffled) {
-                switch(section) {
-                    case 'serpentine':
-                        // Serpentine barriers - SHORT barriers, never block full track
-                        const serpentineCount = 4 + Math.floor(Math.random() * 3);
-                        for (let i = 0; i < serpentineCount; i++) {
-                            const side = Math.random() > 0.5;
-                            obstacles.push({
-                                type: 'rect',
-                                x: side ? 50 + Math.random() * 50 : 400 + Math.random() * 50,
-                                y: currentY,
-                                width: 120, // SHORT - leaves plenty of space
-                                height: 20,
-                                color: '#e74c3c'
-                            });
-                            currentY += 120 + Math.random() * 50;
-                        }
-                        break;
-
-                    case 'bumps':
-                        // Circular bumps - scattered, never block passage
-                        const bumpCount = 8 + Math.floor(Math.random() * 6);
-                        for (let i = 0; i < bumpCount; i++) {
-                            obstacles.push({
-                                type: 'circle',
-                                x: 80 + (i % 4) * 120 + Math.random() * 40,
-                                y: currentY + Math.floor(i / 4) * 100,
-                                radius: 18 + Math.random() * 10,
-                                color: '#f39c12'
-                            });
-                        }
-                        currentY += 280;
-                        break;
-
-                    case 'zigzag':
-                        // Zigzag - SHORT platforms on alternating sides
-                        const zigCount = 5 + Math.floor(Math.random() * 3);
-                        for (let i = 0; i < zigCount; i++) {
-                            obstacles.push({
-                                type: 'rect',
-                                x: i % 2 === 0 ? 60 : 360,
-                                y: currentY,
-                                width: 140, // SHORT - leaves 300px+ open space
-                                height: 15,
-                                color: '#9b59b6'
-                            });
-                            currentY += 100 + Math.random() * 40;
-                        }
-                        break;
-
-                    case 'platforms':
-                        // Small scattered platforms - never block full width
-                        const platformCount = 4 + Math.floor(Math.random() * 3);
-                        for (let i = 0; i < platformCount; i++) {
-                            // 2-3 small platforms with gaps
-                            const numPlatforms = 2 + Math.floor(Math.random() * 2);
-                            for (let j = 0; j < numPlatforms; j++) {
-                                obstacles.push({
-                                    type: 'rect',
-                                    x: 60 + j * 180 + Math.random() * 40,
-                                    y: currentY + Math.random() * 30,
-                                    width: 90, // SMALL platforms
-                                    height: 12,
-                                    color: '#3498db'
-                                });
-                            }
-                            currentY += 150;
-                        }
-                        break;
-
-                    case 'spinners':
-                        // Scattered circles - never block passage
-                        const spinnerCount = 4 + Math.floor(Math.random() * 4);
-                        for (let i = 0; i < spinnerCount; i++) {
-                            obstacles.push({
-                                type: 'circle',
-                                x: 100 + (i % 3) * 170 + Math.random() * 50,
-                                y: currentY + Math.floor(i / 3) * 120,
-                                radius: 22 + Math.random() * 8,
-                                color: '#e67e22'
-                            });
-                        }
-                        currentY += 250;
-                        break;
-                }
-
-                currentY += 80; // Larger gap between sections
+            // Alt Kapak
+            if (!lidOpen) {
+                obstacles.push({ type: 'lid', x: centerX - gateW/2, y: gateTopY + gateH, w: gateW, h: 12, color: '#ef4444' });
             }
 
-            // Finish line
-            obstacles.push({
-                type: 'finish',
-                y: TRACK_LENGTH - 100
-            });
-        }
+            // --- ÇAPRAZ / STAGGERED ÇİVİ MANTIĞI ---
+            const startY = gateTopY + gateH + 50; 
+            const endY = TRACK_HEIGHT - 60;
+            const marbleDiameter = MARBLE_RADIUS * 2;
+            
+            // Satırlar arası dikey mesafe (Biraz artırıldı ki bilyeler sıkışmasın)
+            const rowSpacing = marbleDiameter * 3; 
+            
+            let rowIndex = 0;
 
-        function createMarbles() {
-            marbles = [];
-            const spacing = 70;
-            const startX = (TRACK_WIDTH - (racers.length - 1) * spacing) / 2;
+            for (let currentY = startY; currentY < endY; currentY += rowSpacing) {
+                // Şaşırtmalı Sıralama: Tek numaralı satırları sağa kaydır
+                // Bu, bilyelerin düz değil çapraz düşmesini sağlar (Diagonal Akış)
+                const isOddRow = rowIndex % 2 !== 0;
+                const staggerOffset = isOddRow ? (marbleDiameter * 2) : 0;
 
-            racers.forEach((racer, index) => {
-                marbles.push({
-                    name: racer.name,
-                    color: racer.color,
-                    x: startX + index * spacing,
-                    y: 80,
-                    vx: 0,
-                    vy: 0,
-                    radius: MARBLE_RADIUS,
-                    finished: false,
-                    finishTime: 0,
-                    progress: 0
-                });
-            });
-        }
+                // Satır başlangıcı
+                let currentX = WALL_THICKNESS + 20 + staggerOffset;
+                
+                // Satırın sonuna kadar çivi döşe
+                while (currentX < TRACK_WIDTH - WALL_THICKNESS - 20) {
+                    
+                    // Rastgele Mesafe (1.2x ile 1.8x arası) - Biraz daha açtık
+                    const randomGapFactor = 1.2 + (Math.random() * 0.6);
+                    const gap = marbleDiameter * randomGapFactor;
 
-        function checkCollision(marble, obstacle) {
-            if (obstacle.type === 'circle') {
-                // Circle to circle collision
-                const dx = marble.x - obstacle.x;
-                const dy = marble.y - obstacle.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                return distance < marble.radius + obstacle.radius;
-            } else if (obstacle.type === 'rect' || obstacle.type === 'wall') {
-                // Circle to rectangle collision
-                const closestX = Math.max(obstacle.x, Math.min(marble.x, obstacle.x + obstacle.width));
-                const closestY = Math.max(obstacle.y, Math.min(marble.y, obstacle.y + obstacle.height));
+                    // Y Pozisyonunda hafif oynama (Dalgalı satır etkisi için)
+                    const jitterY = (Math.random() * 10) - 5;
 
-                const dx = marble.x - closestX;
-                const dy = marble.y - closestY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+                    obstacles.push({ 
+                        type: 'circle', 
+                        x: currentX, 
+                        y: currentY + jitterY, 
+                        r: PEG_RADIUS, 
+                        color: '#64748b' 
+                    });
 
-                return distance < marble.radius;
-            }
-            return false;
-        }
-
-        function resolveCollision(marble, obstacle) {
-            if (obstacle.type === 'circle') {
-                // Circle collision response
-                const dx = marble.x - obstacle.x;
-                const dy = marble.y - obstacle.y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance < marble.radius + obstacle.radius && distance > 0) {
-                    // Normalize
-                    const nx = dx / distance;
-                    const ny = dy / distance;
-
-                    // Separate marbles
-                    const overlap = marble.radius + obstacle.radius - distance;
-                    marble.x += nx * overlap;
-                    marble.y += ny * overlap;
-
-                    // Reflect velocity
-                    const dotProduct = marble.vx * nx + marble.vy * ny;
-                    marble.vx = (marble.vx - 2 * dotProduct * nx) * BOUNCE;
-                    marble.vy = (marble.vy - 2 * dotProduct * ny) * BOUNCE;
+                    // Bir sonraki konumu belirle
+                    currentX += (PEG_RADIUS * 2) + gap;
                 }
-            } else if (obstacle.type === 'rect' || obstacle.type === 'wall') {
-                // Rectangle collision response
-                const closestX = Math.max(obstacle.x, Math.min(marble.x, obstacle.x + obstacle.width));
-                const closestY = Math.max(obstacle.y, Math.min(marble.y, obstacle.y + obstacle.height));
+                rowIndex++;
+            }
 
-                const dx = marble.x - closestX;
-                const dy = marble.y - closestY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
+            // Ana Duvarlar
+            obstacles.push({ type: 'wall', x: 0, y: 0, w: WALL_THICKNESS, h: TRACK_HEIGHT, color: '#1e293b' }); // Sol
+            obstacles.push({ type: 'wall', x: TRACK_WIDTH - WALL_THICKNESS, y: 0, w: WALL_THICKNESS, h: TRACK_HEIGHT, color: '#1e293b' }); // Sağ
+        }
 
-                if (distance < marble.radius && distance > 0) {
-                    // Normalize
-                    const nx = dx / distance;
-                    const ny = dy / distance;
+        function initMarbles() {
+            const gateW = 140;
+            const centerX = TRACK_WIDTH / 2;
+            const startY = 60;
 
-                    // Push marble out
-                    const overlap = marble.radius - distance;
-                    marble.x += nx * overlap;
-                    marble.y += ny * overlap;
+            marbles = racers.map((r, i) => ({
+                ...r,
+                x: centerX - gateW/2 + 20 + Math.random() * (gateW - 40),
+                y: startY + Math.random() * 80,
+                vx: (Math.random() - 0.5) * 2,
+                vy: (Math.random() - 0.5) * 2,
+                r: MARBLE_RADIUS,
+                finished: false
+            }));
+            finishOrder = [];
+        }
 
-                    // Reflect velocity
-                    const dotProduct = marble.vx * nx + marble.vy * ny;
-                    if (dotProduct < 0) {
-                        marble.vx = (marble.vx - 2 * dotProduct * nx) * BOUNCE;
-                        marble.vy = (marble.vy - 2 * dotProduct * ny) * BOUNCE;
+        // --- GAME CONTROL ---
+        function startRace() {
+            selectedMode = document.getElementById('gameMode').value;
+            lidOpen = false;
+
+            document.getElementById('setupView').style.display = 'none';
+            const gameContainer = document.getElementById('gameContainer');
+            gameContainer.classList.remove('hidden');
+            gameContainer.style.display = 'flex';
+            
+            if (window.innerWidth < 768) {
+                document.getElementById('mobileLeaderboard').classList.remove('hidden');
+            }
+
+            const modal = document.getElementById('resultModal');
+            modal.style.display = 'none';
+            modal.style.opacity = '0';
+
+            const container = document.getElementById('raceCanvas').parentElement;
+            const rect = container.getBoundingClientRect();
+            
+            TRACK_WIDTH = rect.width;
+            TRACK_HEIGHT = rect.height;
+            
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = TRACK_WIDTH * dpr;
+            canvas.height = TRACK_HEIGHT * dpr;
+            ctx.scale(dpr, dpr);
+            
+            initMarbles();
+            generateMap(); 
+            
+            isRacing = true;
+            if (animationId) cancelAnimationFrame(animationId);
+            gameLoop();
+
+            setTimeout(() => {
+                lidOpen = true;
+                generateMap(); 
+            }, 1000);
+        }
+
+        function stopRace() {
+            isRacing = false;
+            cancelAnimationFrame(animationId);
+            
+            document.getElementById('setupView').style.display = 'flex';
+            document.getElementById('gameContainer').style.display = 'none';
+            document.getElementById('mobileLeaderboard').classList.add('hidden');
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        // --- PHYSICS LOOP ---
+        function gameLoop() {
+            if (!isRacing) return;
+
+            marbles.forEach(m => {
+                if (!m.finished) {
+                    m.vy += GRAVITY;
+                    m.vx *= FRICTION;
+                    m.vy *= FRICTION;
+                    m.x += m.vx;
+                    m.y += m.vy;
+                    
+                    if (m.x < m.r + WALL_THICKNESS) { m.x = m.r + WALL_THICKNESS; m.vx *= -0.5; }
+                    if (m.x > TRACK_WIDTH - m.r - WALL_THICKNESS) { m.x = TRACK_WIDTH - m.r - WALL_THICKNESS; m.vx *= -0.5; }
+                }
+            });
+
+            // Collisions
+            for (let i = 0; i < marbles.length; i++) {
+                for (let j = i + 1; j < marbles.length; j++) {
+                    const m1 = marbles[i];
+                    const m2 = marbles[j];
+                    const dx = m2.x - m1.x;
+                    const dy = m2.y - m1.y;
+                    const distSq = dx*dx + dy*dy;
+                    const radSum = m1.r + m2.r;
+
+                    if (distSq < radSum * radSum && distSq > 0) {
+                        const dist = Math.sqrt(distSq);
+                        const nx = dx / dist; const ny = dy / dist;
+                        const overlap = (radSum - dist) * 0.5;
+
+                        if (!m1.finished) { m1.x -= nx*overlap; m1.y -= ny*overlap; }
+                        if (!m2.finished) { m2.x += nx*overlap; m2.y += ny*overlap; }
+
+                        const p = 2 * (m1.vx * nx + m1.vy * ny - m2.vx * nx - m2.vy * ny) / 2;
+                        m1.vx -= p * nx * 0.5; m1.vy -= p * ny * 0.5;
+                        m2.vx += p * nx * 0.5; m2.vy += p * ny * 0.5;
                     }
                 }
             }
-        }
 
-        function animate() {
-            if (raceFinished) return;
+            // Obstacles
+            marbles.forEach(m => {
+                if (m.finished) return;
+                
+                if (m.y >= TRACK_HEIGHT + m.r) {
+                    m.finished = true;
+                    finishOrder.push(m);
+                    return;
+                }
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+                obstacles.forEach(obs => {
+                    if (obs.type === 'circle') {
+                        const dx = m.x - obs.x;
+                        const dy = m.y - obs.y;
+                        const distSq = dx*dx + dy*dy;
+                        const radSum = m.r + obs.r;
+                        if (distSq < radSum * radSum) {
+                            const dist = Math.sqrt(distSq);
+                            const nx = dx / dist; const ny = dy / dist;
+                            const overlap = radSum - dist;
+                            m.x += nx * overlap; m.y += ny * overlap;
+                            const dot = m.vx * nx + m.vy * ny;
+                            m.vx = (m.vx - 2 * dot * nx) * BOUNCE;
+                            m.vy = (m.vy - 2 * dot * ny) * BOUNCE;
+                            m.vx += (Math.random() - 0.5) * 1.5;
+                        }
+                    } else { // Wall & Lid
+                        if (m.x + m.r > obs.x && m.x - m.r < obs.x + obs.w &&
+                            m.y + m.r > obs.y && m.y - m.r < obs.y + obs.h) {
+                            
+                            const overlapL = (m.x + m.r) - obs.x;
+                            const overlapR = (obs.x + obs.w) - (m.x - m.r);
+                            const overlapT = (m.y + m.r) - obs.y;
+                            const overlapB = (obs.y + obs.h) - (m.y - m.r);
+                            const min = Math.min(overlapL, overlapR, overlapT, overlapB);
 
-            // Find leading marble for camera
-            let leadMarble = marbles.reduce((lead, marble) =>
-                marble.y > lead.y ? marble : lead, marbles[0]
-            );
+                            if (min === overlapL) { m.x -= overlapL; m.vx *= -BOUNCE; }
+                            else if (min === overlapR) { m.x += overlapR; m.vx *= -BOUNCE; }
+                            else if (min === overlapT) { m.y -= overlapT; m.vy *= -BOUNCE; }
+                            else if (min === overlapB) { m.y += overlapB; m.vy *= -BOUNCE; }
+                        }
+                    }
+                });
+            });
 
-            // Smooth camera follow - more distant and slower
-            const targetY = leadMarble.y - canvas.height / 2.2;
-            cameraY += (targetY - cameraY) * 0.05;
+            // Draw
+            ctx.clearRect(0, 0, TRACK_WIDTH, TRACK_HEIGHT);
 
-            ctx.save();
-            ctx.translate(0, -cameraY);
-
-            // Draw track background
-            ctx.fillStyle = '#f0f0f0';
-            ctx.fillRect(0, 0, TRACK_WIDTH, TRACK_LENGTH);
-
-            // Draw grid lines
-            ctx.strokeStyle = '#e0e0e0';
-            ctx.lineWidth = 1;
-            for (let y = 0; y < TRACK_LENGTH; y += 100) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(TRACK_WIDTH, y);
-                ctx.stroke();
-            }
-
-            // Draw obstacles
-            drawObstacles();
-
-            // Update and draw marbles
-            updateMarbles();
-            drawMarbles();
-
-            ctx.restore();
-
-            // Update UI
-            updateLeaderboard();
-            checkFinish();
-
-            animationId = requestAnimationFrame(animate);
-        }
-
-        function drawObstacles() {
             obstacles.forEach(obs => {
-                if (obs.type === 'wall' || obs.type === 'rect') {
-                    ctx.fillStyle = obs.color || '#34495e';
-                    ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-
-                    // Add border
-                    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
-
-                } else if (obs.type === 'circle') {
-                    ctx.fillStyle = obs.color || '#f39c12';
+                ctx.fillStyle = obs.color || '#334155';
+                if (obs.type === 'circle') {
                     ctx.beginPath();
-                    ctx.arc(obs.x, obs.y, obs.radius, 0, Math.PI * 2);
+                    ctx.arc(obs.x, obs.y, obs.r, 0, Math.PI * 2);
                     ctx.fill();
-
-                    // Add border
-                    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                } else if (obs.type === 'finish') {
-                    // Checkered pattern
-                    const squareSize = 40;
-                    for (let x = 0; x < TRACK_WIDTH; x += squareSize) {
-                        for (let y = 0; y < 50; y += squareSize) {
-                            ctx.fillStyle = ((x + y) / squareSize) % 2 === 0 ? '#000' : '#fff';
-                            ctx.fillRect(x, obs.y + y, squareSize, squareSize);
-                        }
-                    }
+                    ctx.shadowColor = 'rgba(255,255,255,0.1)';
+                    ctx.shadowBlur = 5;
+                    ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+                } else {
+                    ctx.shadowColor = 'transparent';
+                    ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
                 }
+                ctx.shadowBlur = 0;
             });
+
+            marbles.forEach(m => {
+                if (m.finished) return;
+                ctx.save();
+                ctx.translate(m.x, m.y);
+                
+                const grad = ctx.createRadialGradient(-2, -2, 1, 0, 0, m.r);
+                grad.addColorStop(0, '#fff');
+                grad.addColorStop(0.3, m.color);
+                grad.addColorStop(1, m.color);
+                
+                ctx.fillStyle = grad;
+                ctx.beginPath(); ctx.arc(0, 0, m.r, 0, Math.PI * 2); ctx.fill();
+                
+                ctx.fillStyle = 'white'; ctx.font = 'bold 9px Fredoka'; ctx.textAlign = 'center'; 
+                ctx.fillText(m.name.substring(0, 4), 0, -10);
+                
+                ctx.restore();
+            });
+
+            updateLiveLeaderboard(); // CANLI GÜNCELLEME
+            checkFinishConditions();
+            animationId = requestAnimationFrame(gameLoop);
         }
 
-        function updateMarbles() {
-            marbles.forEach(marble => {
-                if (marble.finished) return;
+        function checkFinishConditions() {
+            if (finishOrder.length === 0) return;
+            
+            let done = false;
+            if (selectedMode === 'first' && finishOrder.length >= 1) done = true;
+            else if (selectedMode === 'top3' && (finishOrder.length >= 3 || finishOrder.length === racers.length)) done = true;
+            else if (selectedMode === 'all' && finishOrder.length === racers.length) done = true;
 
-                // Apply gravity
-                marble.vy += GRAVITY;
-
-                // Apply friction
-                marble.vx *= FRICTION;
-                marble.vy *= FRICTION;
-
-                // Cap velocity
-                const speed = Math.sqrt(marble.vx * marble.vx + marble.vy * marble.vy);
-                if (speed > MAX_VELOCITY) {
-                    marble.vx = (marble.vx / speed) * MAX_VELOCITY;
-                    marble.vy = (marble.vy / speed) * MAX_VELOCITY;
-                }
-
-                // Update position
-                marble.x += marble.vx;
-                marble.y += marble.vy;
-
-                // Check collisions with all obstacles
-                obstacles.forEach(obstacle => {
-                    if (obstacle.type !== 'finish' && checkCollision(marble, obstacle)) {
-                        resolveCollision(marble, obstacle);
-                    }
-                });
-
-                // Add small random variation for unpredictability
-                marble.vx += (Math.random() - 0.5) * 0.2;
-
-                // Update progress
-                marble.progress = Math.min(100, (marble.y / TRACK_LENGTH) * 100);
-
-                // Check finish
-                if (marble.y >= TRACK_LENGTH - 100) {
-                    marble.finished = true;
-                    marble.finishTime = Date.now() - raceStartTime;
-                }
-            });
-        }
-
-        function drawMarbles() {
-            marbles.forEach(marble => {
-                // Shadow
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-                ctx.beginPath();
-                ctx.ellipse(marble.x + 3, marble.y + 3, marble.radius, marble.radius * 0.5, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Marble with gradient
-                const gradient = ctx.createRadialGradient(
-                    marble.x - 5, marble.y - 5, 0,
-                    marble.x, marble.y, marble.radius
-                );
-                gradient.addColorStop(0, 'white');
-                gradient.addColorStop(0.3, marble.color);
-                gradient.addColorStop(1, marble.color);
-
-                ctx.fillStyle = gradient;
-                ctx.beginPath();
-                ctx.arc(marble.x, marble.y, marble.radius, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Border
-                ctx.strokeStyle = 'rgba(0,0,0,0.3)';
-                ctx.lineWidth = 2;
-                ctx.stroke();
-
-                // Highlight
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
-                ctx.beginPath();
-                ctx.arc(marble.x - 4, marble.y - 4, marble.radius * 0.3, 0, Math.PI * 2);
-                ctx.fill();
-            });
-        }
-
-        function updateLeaderboard() {
-            const sorted = [...marbles].sort((a, b) => {
-                if (a.finished && b.finished) return a.finishTime - b.finishTime;
-                if (a.finished) return -1;
-                if (b.finished) return 1;
-                return b.y - a.y;
-            });
-
-            const content = document.getElementById('leaderboardContent');
-            content.innerHTML = '';
-
-            sorted.forEach((marble, index) => {
-                const item = document.createElement('div');
-                item.className = 'racer-rank';
-                if (index === 0) item.classList.add('first');
-                if (index === 1) item.classList.add('second');
-                if (index === 2) item.classList.add('third');
-
-                const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '';
-                const status = marble.finished ? '✓ Bitti' : `${Math.floor(marble.progress)}%`;
-
-                item.innerHTML = `
-                    <span class="rank-number">${medal || (index + 1)}</span>
-                    <div class="rank-color" style="background: ${marble.color}"></div>
-                    <span class="rank-name">${marble.name}</span>
-                    <span class="rank-progress">${status}</span>
-                `;
-                content.appendChild(item);
-            });
-        }
-
-        function checkFinish() {
-            const allFinished = marbles.every(m => m.finished);
-
-            if (allFinished && !raceFinished) {
-                raceFinished = true;
-                cancelAnimationFrame(animationId);
-
-                setTimeout(() => showResults(), 1000);
-            }
-
-            const finishedCount = marbles.filter(m => m.finished).length;
-            const status = document.getElementById('raceStatus');
-
-            if (allFinished) {
-                status.textContent = '🏁 Yarış Bitti!';
-            } else if (finishedCount > 0) {
-                status.textContent = `${finishedCount}/${marbles.length} Yarışmacı Bitirdi`;
-            } else {
-                const elapsed = Math.floor((Date.now() - raceStartTime) / 1000);
-                status.textContent = `⏱️ ${elapsed}s`;
+            if (done) {
+                isRacing = false;
+                setTimeout(showWinner, 600);
             }
         }
 
-        function showResults() {
-            const sorted = [...marbles].sort((a, b) => a.finishTime - b.finishTime);
-
-            document.getElementById('winnerText').textContent = sorted[0].name;
-
-            const podium = document.getElementById('podium');
-            podium.innerHTML = '';
-
-            const medals = ['🥇', '🥈', '🥉'];
-            sorted.slice(0, 3).forEach((marble, index) => {
-                const place = document.createElement('div');
-                place.className = 'podium-place';
-                place.innerHTML = `
-                    <div class="podium-color" style="background: ${marble.color}"></div>
-                    <div class="podium-name">${marble.name}</div>
-                    <div class="podium-medal">${medals[index]}</div>
-                `;
-                podium.appendChild(place);
+        // --- LIVE LEADERBOARD (CANLI SIRALAMA) ---
+        function updateLiveLeaderboard() {
+            const listDesktop = document.getElementById('liveLeaderboard');
+            const listMobile = document.getElementById('mobileLeaderboardContent');
+            let html = '';
+            
+            const sorted = [];
+            
+            // Bitenler
+            finishOrder.forEach((m, i) => sorted.push({ ...m, rank: i + 1, done: true }));
+            
+            // Yarışanlar (Y koordinatına göre sırala)
+            const activeMarbles = marbles.filter(m => !m.finished).sort((a,b) => b.y - a.y);
+            
+            activeMarbles.forEach((m, i) => {
+                sorted.push({ ...m, rank: finishOrder.length + i + 1, done: false });
             });
 
-            document.getElementById('resultModal').style.display = 'flex';
-        }
-
-        function restartRace() {
-            document.getElementById('resultModal').style.display = 'none';
-            cancelAnimationFrame(animationId);
-            startRace();
-        }
-
-        function backToSetup() {
-            document.getElementById('resultModal').style.display = 'none';
-            document.getElementById('raceView').style.display = 'none';
-            document.getElementById('setupPanel').style.display = 'block';
-            cancelAnimationFrame(animationId);
-        }
-
-        // Initialize with examples
-        ['Ali', 'Ayşe', 'Mehmet', 'Zeynep'].forEach(name => {
-            racers.push({
-                name: name,
-                color: colors[racers.length % colors.length]
+            // HTML Oluştur
+            sorted.forEach(m => {
+                const style = m.done ? 'bg-yellow-500/10 border-yellow-500/40 text-yellow-100' : 'bg-white/5 border-white/5 text-slate-300';
+                const icon = m.done ? (m.rank === 1 ? '🥇' : (m.rank===2 ? '🥈' : (m.rank===3 ? '🥉' : '✓'))) : '';
+                
+                html += `<div class="flex items-center p-2 rounded-lg border ${style} backdrop-blur-sm mb-1.5 transition-all duration-300">
+                    <span class="font-bold w-6 text-center ${m.done ? 'text-yellow-400' : 'text-slate-500'} text-xs">#${m.rank}</span>
+                    <div class="w-2.5 h-2.5 rounded-full shrink-0 mx-2 shadow-sm" style="background:${m.color}; box-shadow: 0 0 6px ${m.color}"></div>
+                    <span class="truncate flex-1 text-xs font-semibold tracking-wide">${m.name}</span>
+                    <span class="text-xs">${icon}</span>
+                </div>`;
             });
-        });
-        updateRacersList();
+
+            if(listDesktop) listDesktop.innerHTML = html;
+            if(listMobile) listMobile.innerHTML = html;
+        }
+
+        function showWinner() {
+            const modal = document.getElementById('resultModal');
+            const winner = finishOrder[0];
+            document.getElementById('winnerText').innerText = winner.name;
+            document.getElementById('winnerText').style.color = winner.color;
+            
+            modal.style.display = 'flex';
+            setTimeout(() => modal.style.opacity = '1', 50);
+        }
+
+        loadRacers();
     </script>
 </body>
 </html>
