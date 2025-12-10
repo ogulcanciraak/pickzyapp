@@ -518,7 +518,7 @@
             </button>
 
             <div class="info-box">
-                💡 <strong>İpucu:</strong> En az 2, en fazla 8 yarışmacı ekleyebilirsiniz. Enter tuşuyla hızlıca ekleyin!
+                💡 <strong>İpucu:</strong> En az 2, en fazla 8 yarışmacı ekleyebilirsiniz. Her yarışta farklı parkur!
             </div>
         </div>
 
@@ -577,13 +577,14 @@
         const canvas = document.getElementById('raceCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Constants
+        // Constants - Adjusted for better physics
         const TRACK_WIDTH = 600;
-        const TRACK_LENGTH = 3000; // Long track for 10+ seconds
-        const MARBLE_RADIUS = 15;
-        const GRAVITY = 0.5;
-        const FRICTION = 0.99;
-        const BOUNCE = 0.6;
+        const TRACK_LENGTH = 4000; // Longer track for 10+ seconds
+        const MARBLE_RADIUS = 12;
+        const GRAVITY = 0.25; // Reduced gravity for slower fall
+        const FRICTION = 0.985; // More friction
+        const BOUNCE = 0.5; // Bounce factor
+        const MAX_VELOCITY = 12; // Maximum velocity cap
 
         // Enter key support
         document.getElementById('racerInput').addEventListener('keypress', function(e) {
@@ -670,103 +671,166 @@
         function createObstacles() {
             obstacles = [];
 
-            // Track boundaries
-            obstacles.push({ type: 'wall', x: 0, y: 0, width: 20, height: TRACK_LENGTH });
-            obstacles.push({ type: 'wall', x: TRACK_WIDTH - 20, y: 0, width: 20, height: TRACK_LENGTH });
-
-            // Obstacles along the track
-            let currentY = 200;
-
-            // Serpentine barriers
-            for (let i = 0; i < 5; i++) {
-                obstacles.push({
-                    type: 'barrier',
-                    x: i % 2 === 0 ? 100 : 350,
-                    y: currentY,
-                    width: 200,
-                    height: 15,
-                    angle: i % 2 === 0 ? 10 : -10
-                });
-                currentY += 150;
-            }
-
-            // Narrow passages
+            // Track boundaries (walls)
             obstacles.push({
-                type: 'funnel',
-                x: 150,
-                y: currentY,
-                width: 300,
-                height: 20
-            });
-            currentY += 200;
-
-            // Speed bumps
-            for (let i = 0; i < 8; i++) {
-                obstacles.push({
-                    type: 'bump',
-                    x: 50 + (i % 4) * 130,
-                    y: currentY + Math.floor(i / 4) * 100,
-                    radius: 25
-                });
-            }
-            currentY += 250;
-
-            // Zigzag
-            for (let i = 0; i < 6; i++) {
-                obstacles.push({
-                    type: 'barrier',
-                    x: i % 2 === 0 ? 50 : 300,
-                    y: currentY,
-                    width: 250,
-                    height: 12,
-                    angle: i % 2 === 0 ? 15 : -15
-                });
-                currentY += 120;
-            }
-
-            // Jump ramps
-            obstacles.push({
-                type: 'ramp',
-                x: 150,
-                y: currentY,
-                width: 300,
-                height: 40,
-                angle: -20
-            });
-            currentY += 200;
-
-            // Curved barriers
-            for (let i = 0; i < 4; i++) {
-                obstacles.push({
-                    type: 'barrier',
-                    x: 100 + i * 100,
-                    y: currentY + Math.sin(i) * 50,
-                    width: 80,
-                    height: 15,
-                    angle: Math.sin(i) * 30
-                });
-            }
-            currentY += 200;
-
-            // Final stretch - multiple paths
-            obstacles.push({
-                type: 'divider',
-                x: TRACK_WIDTH / 2 - 10,
-                y: currentY,
+                type: 'wall',
+                x: 0,
+                y: 0,
                 width: 20,
-                height: 300
+                height: TRACK_LENGTH
             });
+            obstacles.push({
+                type: 'wall',
+                x: TRACK_WIDTH - 20,
+                y: 0,
+                width: 20,
+                height: TRACK_LENGTH
+            });
+
+            let currentY = 150;
+
+            // Random course generation with 5+ different obstacle types
+            const sections = [
+                'serpentine',
+                'bumps',
+                'zigzag',
+                'platforms',
+                'tunnels',
+                'spinners'
+            ];
+
+            // Shuffle and select random sections
+            const shuffled = sections.sort(() => Math.random() - 0.5);
+
+            for (let section of shuffled) {
+                switch(section) {
+                    case 'serpentine':
+                        // Serpentine barriers (Type 1)
+                        const serpentineCount = 4 + Math.floor(Math.random() * 3);
+                        for (let i = 0; i < serpentineCount; i++) {
+                            const side = Math.random() > 0.5;
+                            obstacles.push({
+                                type: 'rect',
+                                x: side ? 50 + Math.random() * 100 : 350 + Math.random() * 100,
+                                y: currentY,
+                                width: 150 + Math.random() * 100,
+                                height: 20,
+                                color: '#e74c3c'
+                            });
+                            currentY += 120 + Math.random() * 50;
+                        }
+                        break;
+
+                    case 'bumps':
+                        // Circular bumps (Type 2)
+                        const bumpCount = 6 + Math.floor(Math.random() * 6);
+                        for (let i = 0; i < bumpCount; i++) {
+                            obstacles.push({
+                                type: 'circle',
+                                x: 80 + (i % 4) * 120 + Math.random() * 40,
+                                y: currentY + Math.floor(i / 4) * 100,
+                                radius: 20 + Math.random() * 15,
+                                color: '#f39c12'
+                            });
+                        }
+                        currentY += 250;
+                        break;
+
+                    case 'zigzag':
+                        // Zigzag platforms (Type 3)
+                        const zigCount = 5 + Math.floor(Math.random() * 3);
+                        for (let i = 0; i < zigCount; i++) {
+                            obstacles.push({
+                                type: 'rect',
+                                x: i % 2 === 0 ? 80 : 300,
+                                y: currentY,
+                                width: 200 + Math.random() * 50,
+                                height: 15,
+                                color: '#9b59b6'
+                            });
+                            currentY += 100 + Math.random() * 40;
+                        }
+                        break;
+
+                    case 'platforms':
+                        // Floating platforms (Type 4)
+                        const platformCount = 3 + Math.floor(Math.random() * 3);
+                        for (let i = 0; i < platformCount; i++) {
+                            const numPlatforms = 2 + Math.floor(Math.random() * 2);
+                            for (let j = 0; j < numPlatforms; j++) {
+                                obstacles.push({
+                                    type: 'rect',
+                                    x: 50 + j * 200 + Math.random() * 50,
+                                    y: currentY + Math.random() * 30,
+                                    width: 120,
+                                    height: 15,
+                                    color: '#3498db'
+                                });
+                            }
+                            currentY += 150;
+                        }
+                        break;
+
+                    case 'tunnels':
+                        // Narrow tunnels (Type 5)
+                        const tunnelCount = 2 + Math.floor(Math.random() * 2);
+                        for (let i = 0; i < tunnelCount; i++) {
+                            const tunnelWidth = 150 + Math.random() * 100;
+                            const tunnelX = 100 + Math.random() * (TRACK_WIDTH - 300 - tunnelWidth);
+
+                            // Left wall
+                            obstacles.push({
+                                type: 'rect',
+                                x: tunnelX - 20,
+                                y: currentY,
+                                width: 20,
+                                height: 150,
+                                color: '#34495e'
+                            });
+
+                            // Right wall
+                            obstacles.push({
+                                type: 'rect',
+                                x: tunnelX + tunnelWidth,
+                                y: currentY,
+                                width: 20,
+                                height: 150,
+                                color: '#34495e'
+                            });
+
+                            currentY += 200;
+                        }
+                        break;
+
+                    case 'spinners':
+                        // Rotating obstacles (Type 6)
+                        const spinnerCount = 3 + Math.floor(Math.random() * 3);
+                        for (let i = 0; i < spinnerCount; i++) {
+                            obstacles.push({
+                                type: 'circle',
+                                x: 100 + (i % 3) * 180 + Math.random() * 50,
+                                y: currentY + Math.floor(i / 3) * 120,
+                                radius: 25 + Math.random() * 10,
+                                color: '#e67e22'
+                            });
+                        }
+                        currentY += 200;
+                        break;
+                }
+
+                currentY += 50; // Gap between sections
+            }
 
             // Finish line
             obstacles.push({
                 type: 'finish',
-                y: TRACK_LENGTH - 50
+                y: TRACK_LENGTH - 100
             });
         }
 
         function createMarbles() {
             marbles = [];
-            const spacing = 80;
+            const spacing = 70;
             const startX = (TRACK_WIDTH - (racers.length - 1) * spacing) / 2;
 
             racers.forEach((racer, index) => {
@@ -774,7 +838,7 @@
                     name: racer.name,
                     color: racer.color,
                     x: startX + index * spacing,
-                    y: 50,
+                    y: 80,
                     vx: 0,
                     vy: 0,
                     radius: MARBLE_RADIUS,
@@ -783,6 +847,78 @@
                     progress: 0
                 });
             });
+        }
+
+        function checkCollision(marble, obstacle) {
+            if (obstacle.type === 'circle') {
+                // Circle to circle collision
+                const dx = marble.x - obstacle.x;
+                const dy = marble.y - obstacle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                return distance < marble.radius + obstacle.radius;
+            } else if (obstacle.type === 'rect' || obstacle.type === 'wall') {
+                // Circle to rectangle collision
+                const closestX = Math.max(obstacle.x, Math.min(marble.x, obstacle.x + obstacle.width));
+                const closestY = Math.max(obstacle.y, Math.min(marble.y, obstacle.y + obstacle.height));
+
+                const dx = marble.x - closestX;
+                const dy = marble.y - closestY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                return distance < marble.radius;
+            }
+            return false;
+        }
+
+        function resolveCollision(marble, obstacle) {
+            if (obstacle.type === 'circle') {
+                // Circle collision response
+                const dx = marble.x - obstacle.x;
+                const dy = marble.y - obstacle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < marble.radius + obstacle.radius && distance > 0) {
+                    // Normalize
+                    const nx = dx / distance;
+                    const ny = dy / distance;
+
+                    // Separate marbles
+                    const overlap = marble.radius + obstacle.radius - distance;
+                    marble.x += nx * overlap;
+                    marble.y += ny * overlap;
+
+                    // Reflect velocity
+                    const dotProduct = marble.vx * nx + marble.vy * ny;
+                    marble.vx = (marble.vx - 2 * dotProduct * nx) * BOUNCE;
+                    marble.vy = (marble.vy - 2 * dotProduct * ny) * BOUNCE;
+                }
+            } else if (obstacle.type === 'rect' || obstacle.type === 'wall') {
+                // Rectangle collision response
+                const closestX = Math.max(obstacle.x, Math.min(marble.x, obstacle.x + obstacle.width));
+                const closestY = Math.max(obstacle.y, Math.min(marble.y, obstacle.y + obstacle.height));
+
+                const dx = marble.x - closestX;
+                const dy = marble.y - closestY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance < marble.radius && distance > 0) {
+                    // Normalize
+                    const nx = dx / distance;
+                    const ny = dy / distance;
+
+                    // Push marble out
+                    const overlap = marble.radius - distance;
+                    marble.x += nx * overlap;
+                    marble.y += ny * overlap;
+
+                    // Reflect velocity
+                    const dotProduct = marble.vx * nx + marble.vy * ny;
+                    if (dotProduct < 0) {
+                        marble.vx = (marble.vx - 2 * dotProduct * nx) * BOUNCE;
+                        marble.vy = (marble.vy - 2 * dotProduct * ny) * BOUNCE;
+                    }
+                }
+            }
         }
 
         function animate() {
@@ -797,7 +933,7 @@
 
             // Smooth camera follow
             const targetY = leadMarble.y - canvas.height / 3;
-            cameraY += (targetY - cameraY) * 0.1;
+            cameraY += (targetY - cameraY) * 0.08;
 
             ctx.save();
             ctx.translate(0, -cameraY);
@@ -805,6 +941,16 @@
             // Draw track background
             ctx.fillStyle = '#f0f0f0';
             ctx.fillRect(0, 0, TRACK_WIDTH, TRACK_LENGTH);
+
+            // Draw grid lines
+            ctx.strokeStyle = '#e0e0e0';
+            ctx.lineWidth = 1;
+            for (let y = 0; y < TRACK_LENGTH; y += 100) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(TRACK_WIDTH, y);
+                ctx.stroke();
+            }
 
             // Draw obstacles
             drawObstacles();
@@ -824,57 +970,35 @@
 
         function drawObstacles() {
             obstacles.forEach(obs => {
-                switch(obs.type) {
-                    case 'wall':
-                        ctx.fillStyle = '#34495e';
-                        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                        break;
+                if (obs.type === 'wall' || obs.type === 'rect') {
+                    ctx.fillStyle = obs.color || '#34495e';
+                    ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
 
-                    case 'barrier':
-                        ctx.save();
-                        ctx.translate(obs.x, obs.y);
-                        ctx.rotate(obs.angle * Math.PI / 180);
-                        ctx.fillStyle = '#e74c3c';
-                        ctx.fillRect(0, 0, obs.width, obs.height);
-                        ctx.restore();
-                        break;
+                    // Add border
+                    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
 
-                    case 'bump':
-                        ctx.fillStyle = '#f39c12';
-                        ctx.beginPath();
-                        ctx.arc(obs.x, obs.y, obs.radius, 0, Math.PI * 2);
-                        ctx.fill();
-                        break;
+                } else if (obs.type === 'circle') {
+                    ctx.fillStyle = obs.color || '#f39c12';
+                    ctx.beginPath();
+                    ctx.arc(obs.x, obs.y, obs.radius, 0, Math.PI * 2);
+                    ctx.fill();
 
-                    case 'funnel':
-                        ctx.fillStyle = '#9b59b6';
-                        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                        break;
+                    // Add border
+                    ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
 
-                    case 'ramp':
-                        ctx.save();
-                        ctx.translate(obs.x, obs.y);
-                        ctx.rotate(obs.angle * Math.PI / 180);
-                        ctx.fillStyle = '#3498db';
-                        ctx.fillRect(0, 0, obs.width, obs.height);
-                        ctx.restore();
-                        break;
-
-                    case 'divider':
-                        ctx.fillStyle = '#95a5a6';
-                        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                        break;
-
-                    case 'finish':
-                        // Checkered pattern
-                        const squareSize = 40;
-                        for (let x = 0; x < TRACK_WIDTH; x += squareSize) {
-                            for (let y = 0; y < 50; y += squareSize) {
-                                ctx.fillStyle = ((x + y) / squareSize) % 2 === 0 ? '#000' : '#fff';
-                                ctx.fillRect(x, obs.y + y, squareSize, squareSize);
-                            }
+                } else if (obs.type === 'finish') {
+                    // Checkered pattern
+                    const squareSize = 40;
+                    for (let x = 0; x < TRACK_WIDTH; x += squareSize) {
+                        for (let y = 0; y < 50; y += squareSize) {
+                            ctx.fillStyle = ((x + y) / squareSize) % 2 === 0 ? '#000' : '#fff';
+                            ctx.fillRect(x, obs.y + y, squareSize, squareSize);
                         }
-                        break;
+                    }
                 }
             });
         }
@@ -890,43 +1014,32 @@
                 marble.vx *= FRICTION;
                 marble.vy *= FRICTION;
 
+                // Cap velocity
+                const speed = Math.sqrt(marble.vx * marble.vx + marble.vy * marble.vy);
+                if (speed > MAX_VELOCITY) {
+                    marble.vx = (marble.vx / speed) * MAX_VELOCITY;
+                    marble.vy = (marble.vy / speed) * MAX_VELOCITY;
+                }
+
                 // Update position
                 marble.x += marble.vx;
                 marble.y += marble.vy;
 
-                // Collision with walls
-                if (marble.x - marble.radius < 20) {
-                    marble.x = 20 + marble.radius;
-                    marble.vx *= -BOUNCE;
-                }
-                if (marble.x + marble.radius > TRACK_WIDTH - 20) {
-                    marble.x = TRACK_WIDTH - 20 - marble.radius;
-                    marble.vx *= -BOUNCE;
-                }
-
-                // Simple obstacle collision (basic physics)
-                obstacles.forEach(obs => {
-                    if (obs.type === 'bump') {
-                        const dx = marble.x - obs.x;
-                        const dy = marble.y - obs.y;
-                        const dist = Math.sqrt(dx * dx + dy * dy);
-
-                        if (dist < marble.radius + obs.radius) {
-                            const angle = Math.atan2(dy, dx);
-                            marble.vx += Math.cos(angle) * 2;
-                            marble.vy += Math.sin(angle) * 2;
-                        }
+                // Check collisions with all obstacles
+                obstacles.forEach(obstacle => {
+                    if (obstacle.type !== 'finish' && checkCollision(marble, obstacle)) {
+                        resolveCollision(marble, obstacle);
                     }
                 });
 
-                // Add random variation for excitement
-                marble.vx += (Math.random() - 0.5) * 0.3;
+                // Add small random variation for unpredictability
+                marble.vx += (Math.random() - 0.5) * 0.2;
 
                 // Update progress
                 marble.progress = Math.min(100, (marble.y / TRACK_LENGTH) * 100);
 
                 // Check finish
-                if (marble.y >= TRACK_LENGTH - 50) {
+                if (marble.y >= TRACK_LENGTH - 100) {
                     marble.finished = true;
                     marble.finishTime = Date.now() - raceStartTime;
                 }
@@ -941,7 +1054,7 @@
                 ctx.ellipse(marble.x + 3, marble.y + 3, marble.radius, marble.radius * 0.5, 0, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Marble
+                // Marble with gradient
                 const gradient = ctx.createRadialGradient(
                     marble.x - 5, marble.y - 5, 0,
                     marble.x, marble.y, marble.radius
@@ -955,10 +1068,15 @@
                 ctx.arc(marble.x, marble.y, marble.radius, 0, Math.PI * 2);
                 ctx.fill();
 
+                // Border
+                ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
                 // Highlight
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
                 ctx.beginPath();
-                ctx.arc(marble.x - 5, marble.y - 5, marble.radius * 0.3, 0, Math.PI * 2);
+                ctx.arc(marble.x - 4, marble.y - 4, marble.radius * 0.3, 0, Math.PI * 2);
                 ctx.fill();
             });
         }
