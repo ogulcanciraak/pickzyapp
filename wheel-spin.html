@@ -27,6 +27,7 @@
             font-size: 16px;
             margin-bottom: 20px;
             transition: all 0.3s;
+            font-weight: 600;
         }
 
         .back-btn:hover {
@@ -35,14 +36,14 @@
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         .header h1 {
@@ -53,42 +54,134 @@
 
         .header p {
             font-size: 1.2em;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            opacity: 0.9;
         }
 
-        .setup-panel {
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        /* Options Panel */
+        .options-panel {
             background: white;
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 20px;
         }
 
-        .input-group {
+        .panel-title {
+            font-size: 1.8em;
+            color: #2d3436;
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .input-row {
             display: flex;
             gap: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         input[type="text"] {
             flex: 1;
-            padding: 12px;
+            padding: 12px 15px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 16px;
+            transition: all 0.3s;
         }
 
         input[type="text"]:focus {
             outline: none;
             border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .add-btn, .spin-btn {
+        .add-btn {
             padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background: #667eea;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .option-item {
+            background: linear-gradient(135deg, #f5f3ff 0%, #e8e5ff 100%);
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid #667eea;
+            transition: all 0.3s;
+        }
+
+        .option-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .option-text {
+            font-size: 16px;
+            color: #2d3436;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .option-color {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .remove-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #ff3838;
+            transform: scale(1.1);
+        }
+
+        .clear-all-btn {
+            width: 100%;
+            padding: 12px;
+            background: #636e72;
+            color: white;
             border: none;
             border-radius: 10px;
             font-size: 16px;
@@ -97,65 +190,22 @@
             transition: all 0.3s;
         }
 
-        .add-btn {
-            background: #667eea;
-            color: white;
+        .clear-all-btn:hover {
+            background: #535c60;
         }
 
-        .add-btn:hover {
-            background: #5568d3;
-            transform: scale(1.05);
-        }
-
-        .options-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .option-tag {
-            background: #f5f3ff;
-            padding: 10px 15px;
+        .info-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
             border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border: 2px solid #667eea;
-        }
-
-        .remove-btn {
-            background: #ff4757;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 12px;
-        }
-
-        .spin-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            font-size: 20px;
-            padding: 16px;
+            padding: 15px;
             margin-top: 20px;
+            font-size: 14px;
+            color: #856404;
         }
 
-        .spin-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .spin-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Wheel */
-        .wheel-container {
-            display: none;
+        /* Wheel Panel */
+        .wheel-panel {
             background: white;
             border-radius: 20px;
             padding: 40px;
@@ -163,44 +213,39 @@
             text-align: center;
         }
 
-        .wheel-title {
-            color: #2d3436;
-            font-size: 2em;
-            margin-bottom: 30px;
-        }
-
         .wheel-wrapper {
             position: relative;
             display: inline-block;
-            margin: 40px auto;
+            margin: 20px auto;
         }
 
         .pointer {
             position: absolute;
-            top: -30px;
+            top: -35px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 40px solid #ff4757;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 45px solid #ff4757;
             z-index: 10;
-            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
         }
 
         .wheel {
-            width: 400px;
-            height: 400px;
+            width: 450px;
+            height: 450px;
             border-radius: 50%;
             position: relative;
-            border: 10px solid #2d3436;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            border: 12px solid #2d3436;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            background: #f5f5f5;
         }
 
         .wheel.spinning {
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
         }
 
         .slice {
@@ -221,8 +266,9 @@
             justify-content: center;
             font-weight: bold;
             color: white;
-            font-size: 16px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-size: 18px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            padding-right: 40px;
         }
 
         .wheel-center {
@@ -230,44 +276,90 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 80px;
-            height: 80px;
-            background: white;
+            width: 90px;
+            height: 90px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            font-size: 45px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.4);
             z-index: 5;
-            border: 5px solid #2d3436;
+            border: 5px solid white;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .result-panel {
+        .wheel-center:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .spin-btn {
+            width: 100%;
+            max-width: 350px;
+            padding: 18px;
+            border: none;
+            border-radius: 15px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-top: 30px;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .spin-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        .spin-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .empty-state {
+            color: #999;
+            font-size: 18px;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        /* Result Modal */
+        .result-modal {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            backdrop-filter: blur(5px);
         }
 
         .result-content {
             background: white;
             padding: 50px;
-            border-radius: 20px;
+            border-radius: 25px;
             text-align: center;
             max-width: 500px;
-            animation: popIn 0.5s;
+            animation: popIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
         @keyframes popIn {
             0% {
-                transform: scale(0.5) rotate(-180deg);
+                transform: scale(0.3) rotate(-180deg);
                 opacity: 0;
             }
             100% {
@@ -277,21 +369,28 @@
         }
 
         .winner-emoji {
-            font-size: 100px;
-            margin-bottom: 20px;
-            animation: bounce 0.5s infinite;
+            font-size: 120px;
+            margin-bottom: 25px;
+            animation: bounce 0.6s infinite alternate;
         }
 
         @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-25px); }
+        }
+
+        .result-label {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 15px;
         }
 
         .winner-text {
-            font-size: 2.5em;
+            font-size: 3em;
             color: #667eea;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
         }
 
         .action-btns {
@@ -301,9 +400,9 @@
 
         .action-btn {
             flex: 1;
-            padding: 15px;
+            padding: 16px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
@@ -320,14 +419,26 @@
             transform: translateY(-2px);
         }
 
-        .home-btn {
+        .close-btn {
             background: #636e72;
             color: white;
         }
 
-        .home-btn:hover {
+        .close-btn:hover {
             background: #535c60;
             transform: translateY(-2px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .wheel {
+                width: 350px;
+                height: 350px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -336,14 +447,48 @@
             }
 
             .wheel {
-                width: 300px;
-                height: 300px;
+                width: 280px;
+                height: 280px;
+            }
+
+            .wheel-center {
+                width: 70px;
+                height: 70px;
+                font-size: 35px;
+            }
+
+            .slice-content {
+                font-size: 14px;
+                padding-right: 20px;
             }
 
             .result-content {
                 padding: 30px;
                 margin: 20px;
             }
+
+            .winner-text {
+                font-size: 2em;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .options-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .options-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .options-list::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+
+        .options-list::-webkit-scrollbar-thumb:hover {
+            background: #5568d3;
         }
     </style>
 </head>
@@ -353,43 +498,61 @@
     <div class="container">
         <div class="header">
             <h1>🎡 Şans Çarkı</h1>
-            <p>Klasik çark çevirme! Şansını dene.</p>
+            <p>Seçeneklerini ekle, çarkı çevir ve kararını ver!</p>
         </div>
 
-        <div class="setup-panel" id="setupPanel">
-            <div class="input-group">
+        <div class="main-content">
+            <!-- Options Panel -->
+            <div class="options-panel">
+                <h2 class="panel-title">📝 Seçenekler</h2>
+
                 <div class="input-row">
-                    <input type="text" id="optionInput" placeholder="Seçenek ekle (örn: Pizza, Burger...)">
+                    <input type="text" id="optionInput" placeholder="Seçenek yaz... (örn: Pizza, Burger)" maxlength="30">
                     <button class="add-btn" onclick="addOption()">+ Ekle</button>
+                </div>
+
+                <div class="options-list" id="optionsList"></div>
+
+                <button class="clear-all-btn" onclick="clearAll()" id="clearBtn" style="display: none;">
+                    🗑️ Hepsini Temizle
+                </button>
+
+                <div class="info-box">
+                    💡 <strong>İpucu:</strong> En az 2, en fazla 12 seçenek ekleyebilirsiniz. Enter tuşuyla hızlıca ekleyin!
                 </div>
             </div>
 
-            <div class="options-list" id="optionsList"></div>
+            <!-- Wheel Panel -->
+            <div class="wheel-panel">
+                <div id="wheelArea">
+                    <div class="wheel-wrapper">
+                        <div class="pointer"></div>
+                        <div class="wheel" id="wheel">
+                            <div class="wheel-center" onclick="spinWheel()">🎯</div>
+                        </div>
+                    </div>
+                    <button class="spin-btn" id="spinBtn" onclick="spinWheel()" disabled>
+                        🎡 Çarkı Çevir!
+                    </button>
+                </div>
 
-            <button class="spin-btn" id="spinBtn" onclick="showWheel()" disabled>
-                🎡 Çarkı Çevir!
-            </button>
-        </div>
-
-        <div class="wheel-container" id="wheelContainer">
-            <h2 class="wheel-title">Çarkı çevirmek için tıkla!</h2>
-            <div class="wheel-wrapper">
-                <div class="pointer"></div>
-                <div class="wheel" id="wheel" onclick="spinWheel()">
-                    <div class="wheel-center">🎯</div>
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-state-icon">🎪</div>
+                    <p>Sol taraftan seçenek ekleyerek başla!</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="result-panel" id="resultPanel">
+    <!-- Result Modal -->
+    <div class="result-modal" id="resultModal">
         <div class="result-content">
             <div class="winner-emoji">🎉</div>
-            <h2 style="color: #667eea; margin-bottom: 20px;">Sonuç!</h2>
+            <div class="result-label">Kazanan Seçenek:</div>
             <div class="winner-text" id="winnerText"></div>
             <div class="action-btns">
-                <button class="action-btn retry-btn" onclick="resetWheel()">🔄 Tekrar Çevir</button>
-                <button class="action-btn home-btn" onclick="location.href='index.html'">🏠 Ana Sayfa</button>
+                <button class="action-btn retry-btn" onclick="spinAgain()">🔄 Tekrar Çevir</button>
+                <button class="action-btn close-btn" onclick="closeResult()">✓ Tamam</button>
             </div>
         </div>
     </div>
@@ -397,8 +560,13 @@
     <script>
         let options = [];
         let isSpinning = false;
-        const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
+        const colors = [
+            '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
+            '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
+            '#F093FB', '#4FACFE', '#43E97B', '#FA709A'
+        ];
 
+        // Enter key support
         document.getElementById('optionInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') addOption();
         });
@@ -407,23 +575,45 @@
             const input = document.getElementById('optionInput');
             const value = input.value.trim();
 
-            if (!value) return;
+            if (!value) {
+                input.focus();
+                return;
+            }
 
-            if (options.length >= 8) {
-                alert('Maksimum 8 seçenek ekleyebilirsin!');
+            if (options.length >= 12) {
+                alert('⚠️ Maksimum 12 seçenek ekleyebilirsiniz!');
+                return;
+            }
+
+            if (options.includes(value)) {
+                alert('⚠️ Bu seçenek zaten ekli!');
+                input.value = '';
+                input.focus();
                 return;
             }
 
             options.push(value);
             input.value = '';
-            updateOptionsList();
-            updateSpinButton();
+            input.focus();
+            updateUI();
         }
 
         function removeOption(index) {
             options.splice(index, 1);
+            updateUI();
+        }
+
+        function clearAll() {
+            if (confirm('Tüm seçenekleri silmek istediğinize emin misiniz?')) {
+                options = [];
+                updateUI();
+            }
+        }
+
+        function updateUI() {
             updateOptionsList();
-            updateSpinButton();
+            updateWheel();
+            updateButtons();
         }
 
         function updateOptionsList() {
@@ -431,29 +621,35 @@
             list.innerHTML = '';
 
             options.forEach((option, index) => {
-                const tag = document.createElement('div');
-                tag.className = 'option-tag';
-                tag.innerHTML = `
-                    <span>${option}</span>
+                const item = document.createElement('div');
+                item.className = 'option-item';
+                item.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                        <div class="option-color" style="background: ${colors[index % colors.length]}"></div>
+                        <span class="option-text">${option}</span>
+                    </div>
                     <button class="remove-btn" onclick="removeOption(${index})">×</button>
                 `;
-                list.appendChild(tag);
+                list.appendChild(item);
             });
         }
 
-        function updateSpinButton() {
-            document.getElementById('spinBtn').disabled = options.length < 2;
-        }
-
-        function showWheel() {
-            document.getElementById('setupPanel').style.display = 'none';
-            document.getElementById('wheelContainer').style.display = 'block';
-            createWheel();
-        }
-
-        function createWheel() {
+        function updateWheel() {
             const wheel = document.getElementById('wheel');
-            wheel.innerHTML = '<div class="wheel-center">🎯</div>';
+            const emptyState = document.getElementById('emptyState');
+            const wheelArea = document.getElementById('wheelArea');
+
+            if (options.length < 2) {
+                emptyState.style.display = 'block';
+                wheelArea.style.display = 'none';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            wheelArea.style.display = 'block';
+
+            // Clear previous slices
+            wheel.innerHTML = '<div class="wheel-center" onclick="spinWheel()">🎯</div>';
 
             const sliceAngle = 360 / options.length;
 
@@ -473,54 +669,67 @@
             });
         }
 
+        function updateButtons() {
+            const spinBtn = document.getElementById('spinBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            spinBtn.disabled = options.length < 2 || isSpinning;
+            clearBtn.style.display = options.length > 0 ? 'block' : 'none';
+
+            if (options.length < 2) {
+                spinBtn.textContent = '🎡 En az 2 seçenek ekle';
+            } else if (isSpinning) {
+                spinBtn.textContent = '⏳ Çark Dönüyor...';
+            } else {
+                spinBtn.textContent = '🎡 Çarkı Çevir!';
+            }
+        }
+
         function spinWheel() {
-            if (isSpinning) return;
-            
+            if (isSpinning || options.length < 2) return;
+
             isSpinning = true;
+            updateButtons();
+
             const wheel = document.getElementById('wheel');
-            
-            // Random winner
-            const winner = Math.floor(Math.random() * options.length);
+            const winnerIndex = Math.floor(Math.random() * options.length);
             const sliceAngle = 360 / options.length;
-            
-            // Calculate rotation
-            const spins = 5; // Number of full rotations
-            const finalAngle = (360 * spins) + (360 - (winner * sliceAngle + sliceAngle / 2));
-            
-            wheel.style.transform = `rotate(${finalAngle}deg)`;
-            
-            // Show result after spin
+
+            // Calculate final rotation
+            const spins = 5 + Math.random() * 3; // 5-8 full rotations
+            const extraDegrees = Math.random() * 360;
+            const targetAngle = 360 - (winnerIndex * sliceAngle + sliceAngle / 2);
+            const finalRotation = (360 * spins) + extraDegrees + targetAngle;
+
+            // Apply rotation
+            wheel.style.transform = `rotate(${finalRotation}deg)`;
+
+            // Show result after animation
             setTimeout(() => {
-                showResult(options[winner]);
+                showResult(options[winnerIndex]);
                 isSpinning = false;
-            }, 4000);
+                updateButtons();
+            }, 5000);
         }
 
         function showResult(winner) {
             document.getElementById('winnerText').textContent = winner;
-            document.getElementById('resultPanel').style.display = 'flex';
+            document.getElementById('resultModal').style.display = 'flex';
         }
 
-        function resetWheel() {
-            document.getElementById('resultPanel').style.display = 'none';
-            document.getElementById('wheelContainer').style.display = 'none';
-            document.getElementById('setupPanel').style.display = 'block';
-            
-            // Reset wheel rotation
-            const wheel = document.getElementById('wheel');
-            wheel.style.transition = 'none';
-            wheel.style.transform = 'rotate(0deg)';
-            setTimeout(() => {
-                wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
-            }, 50);
+        function closeResult() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+
+        function spinAgain() {
+            closeResult();
+            setTimeout(() => spinWheel(), 300);
         }
 
         // Initialize with example options
-        ['Pizza', 'Burger', 'Kebap', 'Makarna'].forEach(opt => {
-            options.push(opt);
-        });
-        updateOptionsList();
-        updateSpinButton();
+        const examples = ['Pizza', 'Burger', 'Kebap', 'Makarna'];
+        examples.forEach(opt => options.push(opt));
+        updateUI();
     </script>
 </body>
 </html>
