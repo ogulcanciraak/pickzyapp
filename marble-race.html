@@ -577,14 +577,14 @@
         const canvas = document.getElementById('raceCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Constants - Adjusted for better physics
+        // Constants - Adjusted for realistic physics
         const TRACK_WIDTH = 600;
-        const TRACK_LENGTH = 4000; // Longer track for 10+ seconds
+        const TRACK_LENGTH = 5000; // Longer track for slower gameplay
         const MARBLE_RADIUS = 12;
-        const GRAVITY = 0.25; // Reduced gravity for slower fall
-        const FRICTION = 0.985; // More friction
-        const BOUNCE = 0.5; // Bounce factor
-        const MAX_VELOCITY = 12; // Maximum velocity cap
+        const GRAVITY = 0.12; // Much slower fall - realistic
+        const FRICTION = 0.975; // High friction for slow motion
+        const BOUNCE = 0.4; // Less bounce for smoother gameplay
+        const MAX_VELOCITY = 7; // Lower speed cap for realistic motion
 
         // Enter key support
         document.getElementById('racerInput').addEventListener('keypress', function(e) {
@@ -689,13 +689,12 @@
 
             let currentY = 150;
 
-            // Random course generation with 5+ different obstacle types
+            // Random course generation with 5 different obstacle types (no 180° blocks)
             const sections = [
                 'serpentine',
                 'bumps',
                 'zigzag',
                 'platforms',
-                'tunnels',
                 'spinners'
             ];
 
@@ -768,37 +767,6 @@
                                 });
                             }
                             currentY += 150;
-                        }
-                        break;
-
-                    case 'tunnels':
-                        // Narrow tunnels (Type 5)
-                        const tunnelCount = 2 + Math.floor(Math.random() * 2);
-                        for (let i = 0; i < tunnelCount; i++) {
-                            const tunnelWidth = 150 + Math.random() * 100;
-                            const tunnelX = 100 + Math.random() * (TRACK_WIDTH - 300 - tunnelWidth);
-
-                            // Left wall
-                            obstacles.push({
-                                type: 'rect',
-                                x: tunnelX - 20,
-                                y: currentY,
-                                width: 20,
-                                height: 150,
-                                color: '#34495e'
-                            });
-
-                            // Right wall
-                            obstacles.push({
-                                type: 'rect',
-                                x: tunnelX + tunnelWidth,
-                                y: currentY,
-                                width: 20,
-                                height: 150,
-                                color: '#34495e'
-                            });
-
-                            currentY += 200;
                         }
                         break;
 
@@ -931,9 +899,9 @@
                 marble.y > lead.y ? marble : lead, marbles[0]
             );
 
-            // Smooth camera follow
-            const targetY = leadMarble.y - canvas.height / 3;
-            cameraY += (targetY - cameraY) * 0.08;
+            // Smooth camera follow - more distant and slower
+            const targetY = leadMarble.y - canvas.height / 2.2;
+            cameraY += (targetY - cameraY) * 0.05;
 
             ctx.save();
             ctx.translate(0, -cameraY);
