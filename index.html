@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <title>Pickzy - Eğlenceli Karar Verme Araçları</title>
-    <meta name="description" content="Kararsız mı kaldın? Pickzy ile çark çevir, yazı tura at, ördek yarıştır veya sumo güreşi yaptır! Eğlenceli karar verme oyunları burada.">
+    <meta name="description"
+        content="Kararsız mı kaldın? Pickzy ile çark çevir, yazı tura at, ördek yarıştır veya sumo güreşi yaptır! Eğlenceli karar verme oyunları burada.">
     <meta name="keywords" content="karar verici, şans çarkı, yazı tura, online kura, çekiliş yap, ördek yarışı, pickzy">
     <meta name="author" content="Ogulcan Ciraak">
     <meta name="theme-color" content="#8b5cf6">
-    
+
     <meta property="og:type" content="website">
     <meta property="og:title" content="Pickzy - Kararsızlıklarını Eğlenceye Dönüştür!">
     <meta property="og:description" content="Arkadaşlarınla veya tek başına karar vermenin en eğlenceli yolu.">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Quicksand:wght@500;700&display=swap"
+        rel="stylesheet">
 
     <script>
         tailwind.config = {
@@ -54,14 +58,27 @@
             }
         }
     </script>
-    
+
     <style>
-        body { font-family: 'Quicksand', sans-serif; }
-        h1, h2, h3, .font-title { font-family: 'Fredoka', sans-serif; }
-        
-        .card-hover { transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        .card-hover:hover { transform: translateY(-8px) scale(1.02); }
-        
+        body {
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-title {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+
         /* Renkli Arka Plan Baloncukları */
         .bg-blob {
             position: absolute;
@@ -71,12 +88,18 @@
         }
     </style>
 </head>
-<body class="bg-indigo-50 min-h-screen text-slate-800 relative overflow-x-hidden selection:bg-purple-200 selection:text-purple-900">
+
+<body
+    class="bg-indigo-50 min-h-screen text-slate-800 relative overflow-x-hidden selection:bg-purple-200 selection:text-purple-900">
 
     <div class="fixed inset-0 overflow-hidden pointer-events-none">
         <div class="bg-blob w-96 h-96 bg-purple-300 rounded-full top-0 left-0 mix-blend-multiply animate-blob"></div>
-        <div class="bg-blob w-96 h-96 bg-yellow-300 rounded-full top-0 right-0 mix-blend-multiply animate-blob animation-delay-2000"></div>
-        <div class="bg-blob w-96 h-96 bg-pink-300 rounded-full -bottom-32 left-20 mix-blend-multiply animate-blob animation-delay-4000"></div>
+        <div
+            class="bg-blob w-96 h-96 bg-yellow-300 rounded-full top-0 right-0 mix-blend-multiply animate-blob animation-delay-2000">
+        </div>
+        <div
+            class="bg-blob w-96 h-96 bg-pink-300 rounded-full -bottom-32 left-20 mix-blend-multiply animate-blob animation-delay-4000">
+        </div>
     </div>
 
     <nav class="w-full bg-white/80 backdrop-blur-md border-b border-white/40 sticky top-0 z-50">
@@ -84,7 +107,8 @@
             <div class="flex justify-between items-center h-20">
                 <a href="#" class="flex items-center gap-3 group">
                     <span class="text-4xl group-hover:animate-wiggle transform origin-center">🎯</span>
-                    <span class="font-title text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-pink-500">
+                    <span
+                        class="font-title text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-pink-500">
                         Pickzy
                     </span>
                 </a>
@@ -98,26 +122,33 @@
 
     <header class="relative pt-16 pb-20 lg:pt-24 lg:pb-28 text-center px-4">
         <div class="max-w-4xl mx-auto">
-            <span class="inline-block py-1 px-3 rounded-full bg-violet-100 text-violet-700 font-bold text-sm mb-6 border border-violet-200 shadow-sm animate-bounce-slow">
+            <span
+                class="inline-block py-1 px-3 rounded-full bg-violet-100 text-violet-700 font-bold text-sm mb-6 border border-violet-200 shadow-sm animate-bounce-slow">
                 ✨ Karar vermenin en eğlenceli yolu
             </span>
             <h1 class="text-5xl md:text-7xl font-bold text-slate-800 mb-6 tracking-tight leading-tight">
                 Kararsızlıklarını <br>
-                <span class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Eğlenceye Dönüştür!</span>
+                <span
+                    class="bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">Eğlenceye
+                    Dönüştür!</span>
             </h1>
             <p class="text-xl md:text-2xl text-slate-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-                Arkadaşlarınla iddiaya gir, akşam yemeğine karar ver veya sadece eğlen. 
+                Arkadaşlarınla iddiaya gir, akşam yemeğine karar ver veya sadece eğlen.
                 Senin için en iyi seçim aracını bulduk.
             </p>
-            
+
             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <button onclick="quickStart()" class="relative group px-8 py-4 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-2xl text-white font-title text-xl font-bold shadow-xl shadow-indigo-300 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden">
-                    <div class="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 -skew-x-12"></div>
+                <button onclick="quickStart()"
+                    class="relative group px-8 py-4 bg-gradient-to-r from-violet-600 to-indigo-600 rounded-2xl text-white font-title text-xl font-bold shadow-xl shadow-indigo-300 transition-all hover:shadow-2xl hover:-translate-y-1 overflow-hidden">
+                    <div
+                        class="absolute inset-0 bg-white/20 group-hover:translate-x-full transition-transform duration-500 -skew-x-12">
+                    </div>
                     <span class="flex items-center gap-2">
                         🎲 Bana Şans Getir
                     </span>
                 </button>
-                <a href="#games" class="px-8 py-4 bg-white rounded-2xl text-slate-700 font-title text-xl font-bold shadow-lg shadow-slate-200 border-2 border-slate-100 transition-all hover:border-violet-200 hover:text-violet-600">
+                <a href="#games"
+                    class="px-8 py-4 bg-white rounded-2xl text-slate-700 font-title text-xl font-bold shadow-lg shadow-slate-200 border-2 border-slate-100 transition-all hover:border-violet-200 hover:text-violet-600">
                     Tüm Oyunlar
                 </a>
             </div>
@@ -129,18 +160,24 @@
             <h2 class="text-3xl font-bold text-slate-800">🚀 Popüler Araçlar</h2>
             <div class="h-1 flex-1 bg-gradient-to-r from-slate-200 to-transparent rounded-full"></div>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            
-            <div onclick="location.href='duck-race.html'" class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover relative overflow-hidden">
-                <div class="absolute top-6 right-6 z-10 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">POPÜLER</div>
-                <div class="h-48 rounded-[1.5rem] bg-sky-100 flex items-center justify-center relative overflow-hidden group-hover:bg-sky-200 transition-colors">
+
+            <div onclick="location.href='duck-race.html'"
+                class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover relative overflow-hidden">
+                <div
+                    class="absolute top-6 right-6 z-10 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                    POPÜLER</div>
+                <div
+                    class="h-48 rounded-[1.5rem] bg-sky-100 flex items-center justify-center relative overflow-hidden group-hover:bg-sky-200 transition-colors">
                     <div class="text-7xl animate-float">🦆</div>
                     <div class="absolute bottom-0 w-full h-2 bg-sky-300/30"></div>
                 </div>
                 <div class="p-4 pt-6">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-sky-600 transition-colors">Ördek Yarışı</h3>
-                    <p class="text-slate-500 mb-4 line-clamp-2">İsimleri yaz, ördekleri suya bırak! Heyecan dolu bir yarış seni bekliyor.</p>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-sky-600 transition-colors">Ördek
+                        Yarışı</h3>
+                    <p class="text-slate-500 mb-4 line-clamp-2">İsimleri yaz, ördekleri suya bırak! Heyecan dolu bir
+                        yarış seni bekliyor.</p>
                     <div class="flex gap-2 text-sm font-bold text-slate-400">
                         <span class="bg-slate-100 px-3 py-1 rounded-lg">⚡ Hızlı</span>
                         <span class="bg-slate-100 px-3 py-1 rounded-lg">👥 Çoklu</span>
@@ -148,42 +185,58 @@
                 </div>
             </div>
 
-            <div onclick="location.href='sumo-battle.html'" class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
-                <div class="h-48 rounded-[1.5rem] bg-orange-100 flex items-center justify-center group-hover:bg-orange-200 transition-colors">
+            <div onclick="location.href='sumo-battle.html'"
+                class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
+                <div
+                    class="h-48 rounded-[1.5rem] bg-orange-100 flex items-center justify-center group-hover:bg-orange-200 transition-colors">
                     <div class="text-7xl animate-wiggle">🥋</div>
                 </div>
                 <div class="p-4 pt-6">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-orange-600 transition-colors">Sumo Savaşı</h3>
-                    <p class="text-slate-500 mb-4 line-clamp-2">Arenada kalan son kişi kazanır! Fizik tabanlı eğlenceli kapışma.</p>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-orange-600 transition-colors">
+                        Sumo Savaşı</h3>
+                    <p class="text-slate-500 mb-4 line-clamp-2">Arenada kalan son kişi kazanır! Fizik tabanlı eğlenceli
+                        kapışma.</p>
                     <div class="flex gap-2 text-sm font-bold text-slate-400">
                         <span class="bg-slate-100 px-3 py-1 rounded-lg">💪 Aksiyon</span>
                         <span class="bg-slate-100 px-3 py-1 rounded-lg">😂 Komik</span>
                     </div>
                 </div>
             </div>
-
-            <div onclick="location.href='f1-race.html'" class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
-                <div class="h-48 rounded-[1.5rem] bg-red-100 flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                    <div class="text-7xl group-hover:translate-x-6 transition-transform duration-500">🏎️</div>
+            <div onclick="location.href='balloon-pop.html'"
+                class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
+                <div
+                    class="h-48 rounded-[1.5rem] bg-pink-100 flex items-center justify-center group-hover:bg-pink-200 transition-colors relative overflow-hidden">
+                    <div class="text-7xl animate-bounce" style="animation-duration: 2s;">🎈</div>
+                    <div class="absolute top-4 left-4 text-3xl opacity-30 animate-pulse">🎈</div>
+                    <div class="absolute bottom-4 right-4 text-4xl opacity-30 animate-pulse"
+                        style="animation-delay: 1s;">🎈</div>
                 </div>
                 <div class="p-4 pt-6">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-red-600 transition-colors">F1 Yarışı</h3>
-                    <p class="text-slate-500 mb-4 line-clamp-2">Hız tutkunları buraya! Pistte lastik yak ve bitiş çizgisini ilk sen geç.</p>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-pink-600 transition-colors">Balon
+                        Patlatma</h3>
+                    <p class="text-slate-500 mb-4 line-clamp-2">Gerilim dolu bir eleme oyunu! Balonlar şişiyor, kiminki
+                        patlayacak?</p>
                     <div class="flex gap-2 text-sm font-bold text-slate-400">
-                        <span class="bg-slate-100 px-3 py-1 rounded-lg">🏁 Yarış</span>
-                        <span class="bg-slate-100 px-3 py-1 rounded-lg">🔥 Hız</span>
+                        <span class="bg-slate-100 px-3 py-1 rounded-lg">💥 Gerilim</span>
+                        <span class="bg-slate-100 px-3 py-1 rounded-lg">🎯 Eleme</span>
                     </div>
                 </div>
             </div>
 
-            <div onclick="location.href='marble-race.html'" class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
-                <div class="absolute top-6 right-6 z-10 bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">YENİ</div>
-                <div class="h-48 rounded-[1.5rem] bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
+            <div onclick="location.href='marble-race.html'"
+                class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
+                <div
+                    class="absolute top-6 right-6 z-10 bg-indigo-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                    YENİ</div>
+                <div
+                    class="h-48 rounded-[1.5rem] bg-indigo-100 flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
                     <div class="text-7xl animate-bounce">🎯</div>
                 </div>
                 <div class="p-4 pt-6">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">Bilye Parkuru</h3>
-                    <p class="text-slate-500 mb-4 line-clamp-2">Plinko tarzı kaos! Bilyeler engellerden seke seke aşağı iniyor.</p>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-indigo-600 transition-colors">
+                        Bilye Parkuru</h3>
+                    <p class="text-slate-500 mb-4 line-clamp-2">Plinko tarzı kaos! Bilyeler engellerden seke seke aşağı
+                        iniyor.</p>
                     <div class="flex gap-2 text-sm font-bold text-slate-400">
                         <span class="bg-slate-100 px-3 py-1 rounded-lg">🔮 Şans</span>
                         <span class="bg-slate-100 px-3 py-1 rounded-lg">📺 İzlemesi Keyifli</span>
@@ -191,12 +244,15 @@
                 </div>
             </div>
 
-            <div onclick="location.href='wheel-spin.html'" class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
-                <div class="h-48 rounded-[1.5rem] bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
+            <div onclick="location.href='wheel-spin.html'"
+                class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
+                <div
+                    class="h-48 rounded-[1.5rem] bg-purple-100 flex items-center justify-center group-hover:bg-purple-200 transition-colors">
                     <div class="text-7xl animate-spin-slow" style="animation-duration: 10s;">🎡</div>
                 </div>
                 <div class="p-4 pt-6">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-purple-600 transition-colors">Şans Çarkı</h3>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-purple-600 transition-colors">
+                        Şans Çarkı</h3>
                     <p class="text-slate-500 mb-4 line-clamp-2">Klasik ama vazgeçilmez. Çarkı çevir, şansına küsme!</p>
                     <div class="flex gap-2 text-sm font-bold text-slate-400">
                         <span class="bg-slate-100 px-3 py-1 rounded-lg">🎪 Klasik</span>
@@ -205,12 +261,15 @@
                 </div>
             </div>
 
-            <div onclick="location.href='coin-flip.html'" class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
-                <div class="h-48 rounded-[1.5rem] bg-yellow-100 flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
+            <div onclick="location.href='coin-flip.html'"
+                class="group cursor-pointer bg-white rounded-[2rem] p-4 shadow-xl shadow-slate-200/50 border border-slate-100 card-hover">
+                <div
+                    class="h-48 rounded-[1.5rem] bg-yellow-100 flex items-center justify-center group-hover:bg-yellow-200 transition-colors">
                     <div class="text-7xl" style="transform: rotateY(45deg);">🪙</div>
                 </div>
                 <div class="p-4 pt-6">
-                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-yellow-600 transition-colors">Yazı Tura</h3>
+                    <h3 class="text-2xl font-bold text-slate-800 mb-2 group-hover:text-yellow-600 transition-colors">
+                        Yazı Tura</h3>
                     <p class="text-slate-500 mb-4 line-clamp-2">Anlık kararlar için en hızlı yol. Yazı mı, Tura mı?</p>
                     <div class="flex gap-2 text-sm font-bold text-slate-400">
                         <span class="bg-slate-100 px-3 py-1 rounded-lg">⚡ 1 Saniye</span>
@@ -247,17 +306,17 @@
             const games = [
                 'duck-race.html',
                 'sumo-battle.html',
-                'f1-race.html',
+                'balloon-pop.html',
                 'marble-race.html',
                 'wheel-spin.html',
                 'coin-flip.html'
             ];
-            
+
             // Butona tıklandığında hafif bir yükleme efekti verelim
             const btn = document.querySelector('button[onclick="quickStart()"]');
             btn.innerHTML = '<span class="animate-spin inline-block mr-2">⏳</span> Seçiliyor...';
             btn.classList.add('opacity-75', 'cursor-wait');
-            
+
             setTimeout(() => {
                 const randomGame = games[Math.floor(Math.random() * games.length)];
                 location.href = randomGame;
@@ -271,4 +330,5 @@
         });
     </script>
 </body>
+
 </html>
