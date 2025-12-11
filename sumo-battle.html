@@ -21,6 +21,31 @@
             padding: 20px;
         }
 
+        /* Ana Sayfa Butonu Stili */
+        .home-btn {
+            position: fixed;
+            top: 30px;
+            left: 30px;
+            background: white;
+            color: #667eea;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            color: #764ba2;
+        }
+
         .container {
             max-width: 900px;
             width: 100%;
@@ -561,10 +586,21 @@
             .player-grid {
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
+            
+            .home-btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+                top: 15px;
+                left: 15px;
+            }
         }
     </style>
 </head>
 <body>
+    <a href="index.html" class="home-btn">
+        <span>🏠</span> Ana Sayfa
+    </a>
+
     <div class="container">
         <div class="header">
             <h1 class="title">Sumo Savaşı 🥋</h1>
